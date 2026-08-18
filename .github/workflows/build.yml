@@ -31,7 +31,7 @@ jobs:
       - name: Build the app with PyInstaller
         working-directory: desktop
         run: >
-          python -m PyInstaller --onedir --windowed
+          python -m PyInstaller --onedir --windowed -y
           --name Creoveya
           --icon assets/icon.ico
           --add-data "assets;assets"
