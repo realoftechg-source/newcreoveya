@@ -31,11 +31,15 @@ jobs:
       - name: Build the app with PyInstaller
         working-directory: desktop
         run: >
-          pyinstaller --onedir --windowed
+          python -m PyInstaller --onedir --windowed
           --name Creoveya
           --icon assets/icon.ico
           --add-data "assets;assets"
           app.py
+
+      - name: Copy assets to root dist folder for installer
+        working-directory: desktop
+        run: Copy-Item -Path "dist\Creoveya\_internal\assets" -Destination "dist\Creoveya\assets" -Recurse -Force
 
       - name: Install Inno Setup
         run: choco install innosetup -y
