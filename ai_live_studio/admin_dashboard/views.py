@@ -311,6 +311,7 @@ def platform_settings_view(request):
 def save_platform_settings_view(request):
     setting = PlatformSetting.load()
     setting.decart_api_key_override = request.POST.get('decart_api_key', '').strip()
+    setting.support_telegram_username = request.POST.get('telegram_support_username', '').strip()
     setting.save()
     messages.success(request, 'Platform settings updated.')
     return redirect('admin_dashboard:platform_settings')

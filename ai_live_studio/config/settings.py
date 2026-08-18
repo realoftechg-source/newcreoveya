@@ -180,7 +180,7 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
 
 # -------------------------------------------------------------------------
-# Email configuration
+# Email configuration (used for other mail features such as broadcasts)
 # -------------------------------------------------------------------------
 EMAIL_HOST = os.environ.get('EMAIL_HOST', '')
 if EMAIL_HOST:
@@ -198,9 +198,19 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@ailivestudio.com')
 
-# THIS IS WHERE THE CONTACT FORM DELIVERS TO — your inbox as the site
-# owner. Set CONTACT_FORM_RECIPIENT in .env / Render env vars. Falls back
-# to DEFAULT_FROM_EMAIL if unset.
+# -------------------------------------------------------------------------
+# Telegram support contact
+# -------------------------------------------------------------------------
+# Simple redirect flow: the form opens the user's Telegram DM directly.
+# Prefer a public Telegram username if possible, e.g. supportcreoveya.
+TELEGRAM_SUPPORT_USERNAME = os.environ.get('TELEGRAM_SUPPORT_USERNAME', '').strip()
+TELEGRAM_SUPPORT_URL = os.environ.get('TELEGRAM_SUPPORT_URL', '')
+if not TELEGRAM_SUPPORT_URL and TELEGRAM_SUPPORT_USERNAME:
+    TELEGRAM_SUPPORT_URL = f'https://t.me/{TELEGRAM_SUPPORT_USERNAME.lstrip("@")}'
+if not TELEGRAM_SUPPORT_URL:
+    TELEGRAM_SUPPORT_URL = 'https://t.me/'
+
+# Keep this for compatibility, but the contact form now redirects to Telegram.
 CONTACT_FORM_RECIPIENT = os.environ.get('CONTACT_FORM_RECIPIENT', DEFAULT_FROM_EMAIL)
 
 # Direct-download link for the Windows desktop app, shown on the landing

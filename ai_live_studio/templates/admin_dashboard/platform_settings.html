@@ -1,20 +1,34 @@
 {% extends 'admin_dashboard/base.html' %}
-{% block title %}Decart API Key{% endblock %}
-{% block page_title %}Decart API Key{% endblock %}
+{% block title %}Platform Settings{% endblock %}
+{% block page_title %}Platform Settings{% endblock %}
 {% block content %}
 
-<div class="glass-card p-4" style="max-width: 640px;">
-  <p class="text-muted-soft small">
-    This overrides the DECART_API_KEY environment variable — change your
-    production key any time without a redeploy. Leave blank to fall back
-    to the environment variable instead.
-  </p>
+<div class="glass-card p-4" style="max-width: 700px;">
   <form method="post" action="{% url 'admin_dashboard:save_platform_settings' %}">
     {% csrf_token %}
-    <label>Decart API Key</label>
-    <input type="text" name="decart_api_key" class="form-control mb-3" value="{{ setting.decart_api_key_override }}" placeholder="dct_...">
-    <button class="btn btn-gradient">Save</button>
+
+    <div class="mb-4">
+      <p class="text-muted-soft small mb-2">
+        This overrides the DECART_API_KEY environment variable — change your
+        production key any time without a redeploy. Leave blank to fall back
+        to the environment variable instead.
+      </p>
+      <label class="form-label">Decart API Key</label>
+      <input type="text" name="decart_api_key" class="form-control" value="{{ setting.decart_api_key_override }}" placeholder="dct_...">
+    </div>
+
+    <div class="mb-4">
+      <p class="text-muted-soft small mb-2">
+        The support form will redirect users to this Telegram username. Use the
+        username only, for example <strong>@supportcreoveya</strong> or <strong>supportcreoveya</strong>.
+      </p>
+      <label class="form-label">Telegram Support Username</label>
+      <input type="text" name="telegram_support_username" class="form-control" value="{{ setting.support_telegram_username }}" placeholder="@supportcreoveya">
+    </div>
+
+    <button class="btn btn-gradient">Save Settings</button>
   </form>
+
   <p class="text-muted-soft small mt-3 mb-0">Last updated: {{ setting.updated_at|date:"M d, Y H:i" }}</p>
 </div>
 {% endblock %}

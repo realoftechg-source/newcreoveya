@@ -173,15 +173,16 @@ class PaymentSubmission(models.Model):
 class PlatformSetting(models.Model):
     """
     Singleton row for platform-wide settings the admin can change from the
-    dashboard without a redeploy — currently just the Decart API key
-    override. See api/stream.py's get_decart_api_key() for how this is
-    read (checks this DB value first, falls back to the DECART_API_KEY
-    environment variable if empty).
+    dashboard without a redeploy.
     """
 
     decart_api_key_override = models.CharField(
         max_length=255, blank=True, default='',
         help_text='Leave blank to use the DECART_API_KEY environment variable instead.'
+    )
+    support_telegram_username = models.CharField(
+        max_length=255, blank=True, default='',
+        help_text='Telegram username only, e.g. supportcreoveya or @supportcreoveya.'
     )
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -191,6 +192,14 @@ class PlatformSetting(models.Model):
 
     def __str__(self):
         return 'Platform Settings'
+
+    @property
+    def telegram_support_url(self):
+        username = (self.support_telegram_username or '').strip()
+        if not username:
+            return 'https://t.me/'
+        cleaned = username.lstrip('@')
+        return f'https://t.me/{cleaned}'
 
     @classmethod
     def load(cls):

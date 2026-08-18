@@ -10,6 +10,7 @@
   <h2 class="mb-4 text-center">Contact Us</h2>
   {% if messages %}{% for m in messages %}<div class="alert alert-success">{{ m }}</div>{% endfor %}{% endif %}
   <div class="glass-card p-4">
+    <p class="text-muted-soft small mb-3">Send your message in the form below and we'll open your support chat in Telegram.</p>
     <form method="post">
       {% csrf_token %}
       <div class="mb-3"><label>Your name</label><input type="text" name="name" class="form-control" required></div>
@@ -17,6 +18,7 @@
       <div class="mb-3"><label>Message</label><textarea name="message" class="form-control" rows="5" required></textarea></div>
       <button type="submit" class="btn btn-gradient w-100">Send Message</button>
     </form>
+    <a href="{{ TELEGRAM_SUPPORT_URL }}" target="_blank" rel="noreferrer" class="btn btn-outline-light w-100 mt-3">Open Telegram Support</a>
   </div>
 </div>
 {% endblock %}
