@@ -1,0 +1,39 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Billing{% endblock %}
+{% block page_title %}Billing{% endblock %}
+{% block page_subtitle %}Your payment submissions and their review status.{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-end mb-3">
+  <a href="{% url 'payments:gate' %}" class="btn btn-gradient"><i class="bi bi-plus-lg me-1"></i>Buy More Credits</a>
+</div>
+
+<div class="glass-card p-4">
+  <div class="table-responsive">
+    <table class="table table-glass mb-0">
+      <thead><tr><th>Plan</th><th>Amount</th><th>Method</th><th>Status</th><th>Submitted</th><th>Receipt</th></tr></thead>
+      <tbody>
+        {% for s in submissions %}
+        <tr>
+          <td>{{ s.plan.name|default:"—" }}</td>
+          <td>${{ s.amount }}</td>
+          <td>{{ s.method.get_method_type_display|default:"—" }}</td>
+          <td>
+            <span class="badge-status
+              {% if s.status == 'approved' %}badge-active
+              {% elif s.status == 'rejected' %}badge-suspended
+              {% else %}badge-pending{% endif %}">
+              {{ s.get_status_display }}
+            </span>
+          </td>
+          <td>{{ s.created_at|date:"M d, Y H:i" }}</td>
+          <td><a href="{% url 'payments:receipt_image' s.id %}" target="_blank" class="small">View</a></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" class="text-center text-muted-soft py-4">No payments submitted yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

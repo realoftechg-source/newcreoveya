@@ -1,0 +1,220 @@
+{% extends 'base_public.html' %}
+{% block title %}Choose Your Plan — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<nav class="navbar navbar-glass py-3">
+  <div class="container d-flex justify-content-between align-items-center">
+    <span class="navbar-brand navbar-brand-gradient fs-4">
+      <img src="/static/img/logo-mark.svg" alt="{{ SITE_NAME }}" style="height:28px;width:28px;" class="me-1">{{ SITE_NAME }}
+    </span>
+    <div class="d-flex gap-2">
+      {% if user.has_active_access %}
+      <a href="{% url 'dashboard:home' %}" class="btn btn-outline-glass btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to Dashboard</a>
+      {% endif %}
+      <form action="{% url 'accounts:logout' %}" method="post" class="m-0">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-glass btn-sm"><i class="bi bi-box-arrow-right me-1"></i>Logout</button>
+      </form>
+    </div>
+  </div>
+</nav>
+
+<div class="container py-5" style="max-width: 960px;">
+  <div class="text-center mb-5">
+    <h2 class="section-title">{% if user.has_active_access %}Buy more credits{% else %}Choose a plan to activate your account{% endif %}</h2>
+    <p class="section-subtitle">{% if user.has_active_access %}Submit a payment and an admin will add credits to your account once approved.{% else %}One quick payment and you're in — an admin approves it, then your dashboard unlocks.{% endif %}</p>
+  </div>
+
+  {% if pending %}
+  <div class="glass-card p-5 text-center mx-auto" style="max-width: 560px;">
+    <i class="bi bi-hourglass-split text-warning" style="font-size: 2.5rem;"></i>
+    <h4 class="mt-3">Payment under review</h4>
+    <p class="text-muted-soft">
+      You submitted a payment for <strong>{{ pending.plan.name }}</strong>
+      (${{ pending.amount }}) on {{ pending.created_at|date:"M d, Y H:i" }}.
+      An admin will review it shortly — this page will update automatically
+      once it's approved.
+    </p>
+    <span class="badge-status badge-pending">Pending Review</span>
+    {% if user.has_active_access %}
+    <div class="mt-3"><a href="{% url 'dashboard:home' %}" class="btn btn-outline-glass btn-sm">Back to Dashboard</a></div>
+    {% endif %}
+  </div>
+
+  {% else %}
+
+  {% if rejected %}
+  <div class="alert mb-4" style="background: rgba(226,86,77,0.12); border: 1px solid rgba(226,86,77,0.3); color: #f3a29c;">
+    <i class="bi bi-x-circle me-1"></i>
+    Your last payment submission was rejected{% if rejected.admin_note %}: <em>{{ rejected.admin_note }}</em>{% endif %}.
+    Please try again below.
+  </div>
+  {% endif %}
+
+  <div class="glass-card p-4 mb-4">
+    <h6 class="mb-3"><i class="bi bi-info-circle-fill me-2" style="color:var(--accent);"></i>How to make a payment</h6>
+    <div class="row g-3">
+      <div class="col-md-3">
+        <div class="d-flex align-items-start gap-2">
+          <span class="badge-status badge-idle" style="min-width:24px; text-align:center;">1</span>
+          <span class="text-muted-soft small">Pick a plan below that matches how much you'll stream.</span>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="d-flex align-items-start gap-2">
+          <span class="badge-status badge-idle" style="min-width:24px; text-align:center;">2</span>
+          <span class="text-muted-soft small">Choose Bank Transfer or Cryptocurrency, then send the exact amount to the details shown.</span>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="d-flex align-items-start gap-2">
+          <span class="badge-status badge-idle" style="min-width:24px; text-align:center;">3</span>
+          <span class="text-muted-soft small">Take a screenshot of your payment confirmation and upload it below.</span>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="d-flex align-items-start gap-2">
+          <span class="badge-status badge-idle" style="min-width:24px; text-align:center;">4</span>
+          <span class="text-muted-soft small">Click Submit — an admin reviews it and your dashboard unlocks once approved.</span>
+        </div>
+      </div>
+    </div>
+    <p class="text-muted-soft small mb-0 mt-3"><i class="bi bi-clock-history me-1"></i>Reviews are usually quick. You'll get an email the moment your payment is approved.</p>
+  </div>
+
+  <div class="row g-4 justify-content-center mb-5" id="planRow">
+    {% for plan in plans %}
+    <div class="col-md-5 col-lg-4">
+      <div class="glass-card pricing-card h-100 plan-select-card" data-plan-id="{{ plan.id }}" role="button">
+        <h6 class="text-muted-soft text-uppercase mb-2" style="font-size:.78rem;">{{ plan.name }}</h6>
+        <div class="price-amount mb-1">${{ plan.price }}</div>
+        <div class="text-muted-soft small mb-3">{{ plan.credits }} credits{% if plan.minutes_label %} · {{ plan.minutes_label }}{% endif %}</div>
+        {% if plan.description %}<p class="text-muted-soft small mb-3">{{ plan.description|linebreaksbr }}</p>{% endif %}
+        <button type="button" class="btn btn-outline-glass w-100 plan-select-btn">Select Plan</button>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center text-muted-soft py-4">No plans are available right now — please check back soon.</div>
+    {% endfor %}
+  </div>
+
+  <div class="glass-card p-4" id="paymentSection" style="display:none;">
+    <h5 class="mb-3">Pay for <span id="selectedPlanName"></span> — <span id="selectedPlanPrice"></span></h5>
+
+    <ul class="nav nav-pills mb-4" id="methodTabs">
+      <li class="nav-item"><button class="nav-link active" data-tab="bank" type="button">Bank Transfer</button></li>
+      <li class="nav-item"><button class="nav-link" data-tab="crypto" type="button">Cryptocurrency</button></li>
+    </ul>
+
+    <div id="bankTab">
+      {% for m in bank_methods %}
+      <div class="glass-card p-3 mb-2 method-card" data-method-id="{{ m.id }}" role="button">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <div class="fw-semibold">{{ m.bank_name }}</div>
+            <div class="text-muted-soft small">Account name: {{ m.account_name }}</div>
+            <div class="text-muted-soft small">Account number: {{ m.account_number }}</div>
+            {% if m.routing_or_swift %}<div class="text-muted-soft small">Routing/SWIFT: {{ m.routing_or_swift }}</div>{% endif %}
+          </div>
+          <span class="badge-status badge-idle method-check" style="display:none;"><i class="bi bi-check-lg"></i> Selected</span>
+        </div>
+      </div>
+      {% empty %}
+      <p class="text-muted-soft small">No bank transfer option is available right now.</p>
+      {% endfor %}
+    </div>
+
+    <div id="cryptoTab" style="display:none;">
+      {% for m in crypto_methods %}
+      <div class="glass-card p-3 mb-2 method-card" data-method-id="{{ m.id }}" role="button">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <div class="fw-semibold">{{ m.crypto_currency }}</div>
+            <div class="text-muted-soft small text-break">{{ m.wallet_address }}</div>
+            {% if m.network_note %}<div class="text-muted-soft small">{{ m.network_note }}</div>{% endif %}
+          </div>
+          <span class="badge-status badge-idle method-check" style="display:none;"><i class="bi bi-check-lg"></i> Selected</span>
+        </div>
+      </div>
+      {% empty %}
+      <p class="text-muted-soft small">No cryptocurrency option is available right now.</p>
+      {% endfor %}
+    </div>
+
+    <form method="post" action="{% url 'payments:submit' %}" enctype="multipart/form-data" class="mt-4" id="paymentForm">
+      {% csrf_token %}
+      <input type="hidden" name="plan" id="planInput">
+      <input type="hidden" name="method" id="methodInput">
+      <label>Upload your payment receipt / screenshot</label>
+      <input type="file" name="receipt" class="form-control mb-3" accept="image/jpeg,image/png,image/webp" required>
+      <button type="submit" class="btn btn-gradient w-100" id="submitPaymentBtn" disabled>
+        <i class="bi bi-upload me-2"></i>Submit Payment for Review
+      </button>
+    </form>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const planCards = document.querySelectorAll('.plan-select-card');
+  const paymentSection = document.getElementById('paymentSection');
+  const planInput = document.getElementById('planInput');
+  const methodInput = document.getElementById('methodInput');
+  const submitBtn = document.getElementById('submitPaymentBtn');
+
+  function selectMethodCard(card) {
+    if (!card) return;
+    document.querySelectorAll('.method-card').forEach((c) => {
+      c.classList.remove('highlight');
+      const check = c.querySelector('.method-check');
+      if (check) check.style.display = 'none';
+    });
+    card.classList.add('highlight');
+    const check = card.querySelector('.method-check');
+    if (check) check.style.display = 'inline-block';
+    methodInput.value = card.dataset.methodId;
+    submitBtn.disabled = false;
+  }
+
+  function autoSelectFirstMethodInActiveTab() {
+    const activeTabName = document.querySelector('#methodTabs .nav-link.active')?.dataset.tab || 'bank';
+    const activeTabEl = activeTabName === 'bank' ? document.getElementById('bankTab') : document.getElementById('cryptoTab');
+    const firstCard = activeTabEl?.querySelector('.method-card');
+    if (firstCard) {
+      selectMethodCard(firstCard);
+    } else {
+      methodInput.value = '';
+      submitBtn.disabled = true;
+    }
+  }
+
+  planCards.forEach((card) => {
+    card.addEventListener('click', () => {
+      planCards.forEach((c) => c.classList.remove('highlight'));
+      card.classList.add('highlight');
+      planInput.value = card.dataset.planId;
+      document.getElementById('selectedPlanName').textContent = card.querySelector('h6').textContent;
+      document.getElementById('selectedPlanPrice').textContent = card.querySelector('.price-amount').textContent;
+      paymentSection.style.display = 'block';
+      paymentSection.scrollIntoView({ behavior: 'smooth' });
+      autoSelectFirstMethodInActiveTab();
+    });
+  });
+
+  document.querySelectorAll('#methodTabs .nav-link').forEach((tab) => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('#methodTabs .nav-link').forEach((t) => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('bankTab').style.display = tab.dataset.tab === 'bank' ? 'block' : 'none';
+      document.getElementById('cryptoTab').style.display = tab.dataset.tab === 'crypto' ? 'block' : 'none';
+      autoSelectFirstMethodInActiveTab();
+    });
+  });
+
+  document.querySelectorAll('.method-card').forEach((card) => {
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', () => selectMethodCard(card));
+  });
+</script>
+{% endblock %}

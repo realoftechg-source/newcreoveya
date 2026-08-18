@@ -1,0 +1,11 @@
+{% extends 'base_public.html' %}
+{% block title %}Page Not Found{% endblock %}
+{% block content %}
+<div class="auth-wrapper text-center">
+  <div>
+    <h1 class="gradient-text" style="font-size: 6rem;">404</h1>
+    <p class="text-muted-soft mb-4">The page you're looking for doesn't exist.</p>
+    <a href="{% url 'landing' %}" class="btn btn-gradient">Back to Home</a>
+  </div>
+</div>
+{% endblock %}

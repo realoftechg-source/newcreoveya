@@ -1,0 +1,55 @@
+{% extends 'admin_dashboard/base.html' %}
+{% block title %}Credit Plans{% endblock %}
+{% block page_title %}Credit Plans{% endblock %}
+{% block content %}
+
+<button class="btn btn-gradient mb-3" data-bs-toggle="collapse" data-bs-target="#newPlanForm"><i class="bi bi-plus-lg me-1"></i>Add Plan</button>
+
+<div class="collapse mb-4" id="newPlanForm">
+  <div class="glass-card p-3">
+    <form method="post" action="{% url 'admin_dashboard:save_plan' %}" class="row g-2">
+      {% csrf_token %}
+      <div class="col-md-3"><label class="small">Name</label><input name="name" class="form-control" required></div>
+      <div class="col-md-2"><label class="small">Price ($)</label><input type="number" step="0.01" name="price" class="form-control" required></div>
+      <div class="col-md-2"><label class="small">Credits</label><input type="number" name="credits" class="form-control" required></div>
+      <div class="col-md-2"><label class="small">Minutes label</label><input name="minutes_label" class="form-control" placeholder="e.g. 6 mins"></div>
+      <div class="col-md-2"><label class="small">Order</label><input type="number" name="order" class="form-control" value="0"></div>
+      <div class="col-md-1 d-flex align-items-end"><div class="form-check"><input type="checkbox" name="is_active" class="form-check-input" checked><label class="form-check-label small">Active</label></div></div>
+      <div class="col-12"><label class="small">Description</label><textarea name="description" class="form-control" rows="2" placeholder="Feature bullets shown to users"></textarea></div>
+      <div class="col-12"><button class="btn btn-gradient">Create Plan</button></div>
+    </form>
+  </div>
+</div>
+
+<div class="row g-3">
+  {% for plan in plans %}
+  <div class="col-md-6 col-lg-4">
+    <div class="glass-card p-3">
+      <div class="d-flex justify-content-between">
+        <h6>{{ plan.name }}</h6>
+        <span class="badge-status {% if plan.is_active %}badge-active{% else %}badge-suspended{% endif %}">{% if plan.is_active %}Active{% else %}Hidden{% endif %}</span>
+      </div>
+      <div class="price-amount mb-1">${{ plan.price }}</div>
+      <div class="text-muted-soft small mb-2">{{ plan.credits }} credits {% if plan.minutes_label %}· {{ plan.minutes_label }}{% endif %}</div>
+      <button class="btn btn-sm btn-outline-glass w-100 mb-2" data-bs-toggle="collapse" data-bs-target="#edit-{{ plan.id }}">Edit</button>
+      <form method="post" action="{% url 'admin_dashboard:delete_plan' plan.id %}" onsubmit="return confirm('Delete this plan?');">
+        {% csrf_token %}<button class="btn btn-sm btn-danger-glass w-100">Delete</button>
+      </form>
+      <div class="collapse mt-2" id="edit-{{ plan.id }}">
+        <form method="post" action="{% url 'admin_dashboard:save_plan_edit' plan.id %}" class="row g-1">
+          {% csrf_token %}
+          <div class="col-6"><input name="name" class="form-control form-control-sm" value="{{ plan.name }}"></div>
+          <div class="col-6"><input type="number" step="0.01" name="price" class="form-control form-control-sm" value="{{ plan.price }}"></div>
+          <div class="col-6"><input type="number" name="credits" class="form-control form-control-sm" value="{{ plan.credits }}"></div>
+          <div class="col-6"><input name="minutes_label" class="form-control form-control-sm" value="{{ plan.minutes_label }}"></div>
+          <div class="col-12"><textarea name="description" class="form-control form-control-sm" rows="2">{{ plan.description }}</textarea></div>
+          <div class="col-6"><input type="number" name="order" class="form-control form-control-sm" value="{{ plan.order }}"></div>
+          <div class="col-6 form-check ms-2 mt-1"><input type="checkbox" name="is_active" class="form-check-input" {% if plan.is_active %}checked{% endif %}><label class="form-check-label small">Active</label></div>
+          <div class="col-12"><button class="btn btn-sm btn-gradient w-100">Save</button></div>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% empty %}<div class="col-12 text-center text-muted-soft py-4">No plans yet — add one above.</div>{% endfor %}
+</div>
+{% endblock %}

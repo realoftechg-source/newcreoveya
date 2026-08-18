@@ -1,0 +1,130 @@
+{% extends 'base_public.html' %}
+{% block title %}Terms & Conditions — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<nav class="navbar navbar-glass py-3">
+  <div class="container"><a class="navbar-brand navbar-brand-gradient fs-4" href="{% url 'landing' %}"><img src="/static/img/logo-mark.svg" alt="Creoveya" style="height:28px;width:28px;" class="me-1">Creoveya</a></div>
+</nav>
+<div class="container py-5" style="max-width: 820px;">
+  <h2 class="mb-2">Terms & Conditions</h2>
+  <p class="text-muted-soft small mb-4">Last updated: August 2026</p>
+  <div class="glass-card p-4 p-md-5">
+
+    <p class="text-muted-soft">
+      These Terms & Conditions ("Terms") govern your access to and use of
+      {{ SITE_NAME }} (the "Platform," "we," "us," or "our"), including
+      our website, AI Studio, live streaming tools, and related services.
+      By creating an account or using the Platform, you agree to be bound
+      by these Terms. If you do not agree, please do not use the Platform.
+    </p>
+
+    <h5 class="mt-4">1. Eligibility</h5>
+    <p class="text-muted-soft">
+      You must be at least 18 years old, or the age of majority in your
+      jurisdiction, to create an account. By registering, you represent
+      that all information you provide is accurate and that you have the
+      legal capacity to enter into these Terms.
+    </p>
+
+    <h5 class="mt-4">2. Account Registration & Security</h5>
+    <p class="text-muted-soft">
+      You are responsible for maintaining the confidentiality of your
+      login credentials and for all activity that occurs under your
+      account. Notify us immediately if you suspect unauthorized access.
+      We reserve the right to suspend or terminate accounts that violate
+      these Terms, provide false information, or engage in abusive or
+      fraudulent behavior.
+    </p>
+
+    <h5 class="mt-4">3. Credits, Plans & Payment</h5>
+    <p class="text-muted-soft">
+      Access to live streaming and AI features requires an active credit
+      plan. Plans, pricing, and credit allowances are set by us and may
+      change at any time; current plans are always shown on our payment
+      page. Payments are made via the bank transfer or cryptocurrency
+      details we provide and are subject to manual review — your account
+      is only credited once a payment is verified and approved by our
+      team. We are not responsible for payments sent to incorrect or
+      outdated details, or for delays caused by your payment provider or
+      blockchain network congestion.
+    </p>
+    <p class="text-muted-soft">
+      Credits are consumed based on your streaming activity (quality
+      tier and duration) and do not roll over indefinitely or transfer
+      between accounts. Once your credit balance reaches zero, live
+      streaming and AI look-switching features are locked until you
+      purchase and are approved for additional credits — your account
+      and dashboard otherwise remain accessible.
+    </p>
+
+    <h5 class="mt-4">4. AI Features & Uploaded Content</h5>
+    <p class="text-muted-soft">
+      Our AI Studio allows you to upload a reference photo ("Look") to
+      apply real-time face transformation to your live video. By
+      uploading a Look, you represent and warrant that:
+    </p>
+    <ul class="text-muted-soft">
+      <li>You own the rights to the image, or have the explicit, informed consent of the person depicted to use their likeness in this way;</li>
+      <li>The image does not depict a minor;</li>
+      <li>Your use of the Look will not impersonate, defame, harass, or deceive any real person without their consent, or otherwise violate any applicable law; and</li>
+      <li>You will not use the Platform to create non-consensual intimate imagery, fraudulent content, or content intended to mislead viewers about the identity of the person streaming.</li>
+    </ul>
+    <p class="text-muted-soft">
+      We do not manually review every uploaded Look or livestream in
+      real time. We reserve the right to remove content, suspend
+      accounts, and cooperate with law enforcement where we reasonably
+      believe these Terms or applicable law have been violated.
+    </p>
+
+    <h5 class="mt-4">5. Acceptable Use</h5>
+    <p class="text-muted-soft">You agree not to use the Platform to:</p>
+    <ul class="text-muted-soft">
+      <li>Violate any applicable law or the rights of any third party;</li>
+      <li>Upload, stream, or transmit content that is unlawful, defamatory, obscene, or infringing;</li>
+      <li>Impersonate any person or entity without authorization;</li>
+      <li>Attempt to gain unauthorized access to the Platform, other accounts, or our infrastructure;</li>
+      <li>Interfere with or disrupt the Platform's operation, including through malware, scraping, or excessive automated requests.</li>
+    </ul>
+
+    <h5 class="mt-4">6. Intellectual Property</h5>
+    <p class="text-muted-soft">
+      The Platform, including its software, design, branding, and
+      underlying technology, is owned by us or our licensors and
+      protected by intellectual property laws. You retain ownership of
+      content you upload, but grant us a limited license to host, store,
+      and process it solely to provide the Platform's services to you.
+    </p>
+
+    <h5 class="mt-4">7. Termination</h5>
+    <p class="text-muted-soft">
+      We may suspend or terminate your account at our discretion,
+      including for violation of these Terms, non-payment, fraudulent
+      activity, or extended inactivity. You may stop using the Platform
+      and request account deletion at any time by contacting us.
+    </p>
+
+    <h5 class="mt-4">8. Disclaimers & Limitation of Liability</h5>
+    <p class="text-muted-soft">
+      The Platform is provided "as is" and "as available" without
+      warranties of any kind, express or implied. We do not guarantee
+      uninterrupted or error-free operation of streaming, AI processing,
+      or payment features. To the maximum extent permitted by law, we
+      are not liable for indirect, incidental, or consequential damages
+      arising from your use of the Platform.
+    </p>
+
+    <h5 class="mt-4">9. Changes to These Terms</h5>
+    <p class="text-muted-soft">
+      We may update these Terms from time to time. Continued use of the
+      Platform after changes take effect constitutes acceptance of the
+      revised Terms. Material changes will be reflected by updating the
+      "Last updated" date above.
+    </p>
+
+    <h5 class="mt-4">10. Contact</h5>
+    <p class="text-muted-soft mb-0">
+      Questions about these Terms can be sent through our
+      <a href="{% url 'pages:contact' %}">Contact Us</a> page.
+    </p>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Settings{% endblock %}
+{% block page_title %}Settings{% endblock %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-lg-6">
+    <div class="glass-card p-4 h-100">
+      <h6 class="mb-3"><i class="bi bi-cpu-fill me-2"></i>AI Engine</h6>
+      <p class="text-muted-soft small mb-3">
+        AI streaming is powered directly by this platform — there's nothing
+        for you to connect or configure here.
+      </p>
+      <span class="badge-status {% if AI_ENGINE_CONNECTED %}badge-active{% else %}badge-pending{% endif %}">
+        {% if AI_ENGINE_CONNECTED %}Active{% else %}Awaiting Integration{% endif %}
+      </span>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="glass-card p-4 h-100">
+      <h6 class="mb-3"><i class="bi bi-person-gear me-2"></i>Account</h6>
+      <div class="d-grid gap-2">
+        <a href="{% url 'accounts:profile' %}" class="btn btn-outline-glass text-start"><i class="bi bi-person-circle me-2"></i>Edit Profile</a>
+        <a href="{% url 'accounts:change_password' %}" class="btn btn-outline-glass text-start"><i class="bi bi-shield-lock me-2"></i>Change Password</a>
+        <a href="{% url 'payments:billing' %}" class="btn btn-outline-glass text-start"><i class="bi bi-credit-card me-2"></i>Manage Subscription</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="glass-card p-4">
+      <h6 class="mb-3"><i class="bi bi-bell-fill me-2"></i>Notifications</h6>
+      <div class="form-check form-switch mb-2">
+        <input class="form-check-input" type="checkbox" checked disabled>
+        <label class="form-check-label small text-muted-soft">Email me when a stream ends</label>
+      </div>
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" checked disabled>
+        <label class="form-check-label small text-muted-soft">Email me about credit purchases</label>
+      </div>
+      <p class="text-muted-soft small mt-2 mb-0">Notification preferences are illustrative placeholders — wire these up to real email triggers as needed.</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

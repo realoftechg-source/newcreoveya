@@ -1,0 +1,22 @@
+{% extends 'base_public.html' %}
+{% block title %}Contact Us — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<nav class="navbar navbar-glass py-3">
+  <div class="container">
+    <a class="navbar-brand navbar-brand-gradient fs-4" href="{% url 'landing' %}"><img src="/static/img/logo-mark.svg" alt="{{ SITE_NAME }}" style="height:28px;width:28px;" class="me-1">{{ SITE_NAME }}</a>
+  </div>
+</nav>
+<div class="container py-5" style="max-width: 640px;">
+  <h2 class="mb-4 text-center">Contact Us</h2>
+  {% if messages %}{% for m in messages %}<div class="alert alert-success">{{ m }}</div>{% endfor %}{% endif %}
+  <div class="glass-card p-4">
+    <form method="post">
+      {% csrf_token %}
+      <div class="mb-3"><label>Your name</label><input type="text" name="name" class="form-control" required></div>
+      <div class="mb-3"><label>Email</label><input type="email" name="email" class="form-control" required></div>
+      <div class="mb-3"><label>Message</label><textarea name="message" class="form-control" rows="5" required></textarea></div>
+      <button type="submit" class="btn btn-gradient w-100">Send Message</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

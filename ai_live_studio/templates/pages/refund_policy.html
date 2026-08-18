@@ -1,0 +1,69 @@
+{% extends 'base_public.html' %}
+{% block title %}Refund Policy — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<nav class="navbar navbar-glass py-3">
+  <div class="container"><a class="navbar-brand navbar-brand-gradient fs-4" href="{% url 'landing' %}"><img src="/static/img/logo-mark.svg" alt="Creoveya" style="height:28px;width:28px;" class="me-1">Creoveya</a></div>
+</nav>
+<div class="container py-5" style="max-width: 820px;">
+  <h2 class="mb-2">Refund Policy</h2>
+  <p class="text-muted-soft small mb-4">Last updated: August 2026</p>
+  <div class="glass-card p-4 p-md-5">
+
+    <h5>1. Payments Are Manually Reviewed</h5>
+    <p class="text-muted-soft">
+      All plan purchases on {{ SITE_NAME }} are submitted with a payment
+      receipt and reviewed by our team before credits are added to your
+      account. If your payment is <strong>rejected</strong> (for example,
+      due to an unclear or invalid receipt), no credits are issued and no
+      charge is retained by us for that submission — you're welcome to
+      resubmit with a valid receipt.
+    </p>
+
+    <h5 class="mt-4">2. Approved Payments</h5>
+    <p class="text-muted-soft">
+      Once a payment is <strong>approved</strong> and credits have been
+      added to your account, that purchase is final and non-refundable,
+      except as described below. This is because credits become
+      immediately available for use (streaming, AI processing) upon
+      approval, and usage cost is incurred by us in real time as you
+      stream.
+    </p>
+
+    <h5 class="mt-4">3. Unused Credits</h5>
+    <p class="text-muted-soft">
+      If you have unused, unexpired credits and wish to close your
+      account, contact us via our <a href="{% url 'pages:contact' %}">Contact Us</a>
+      page. Refund requests for unused credit balances are considered on
+      a case-by-case basis and are not guaranteed, particularly where
+      significant time has passed since purchase or where any portion of
+      the credits has already been used.
+    </p>
+
+    <h5 class="mt-4">4. Technical Issues</h5>
+    <p class="text-muted-soft">
+      If a documented, platform-side technical failure (not caused by
+      your device, network, or browser) prevents you from using credits
+      you've purchased, contact support with details of the issue. We
+      will review each case individually and may issue replacement
+      credits or, where appropriate, a partial refund at our discretion.
+    </p>
+
+    <h5 class="mt-4">5. Cryptocurrency Payments</h5>
+    <p class="text-muted-soft">
+      Cryptocurrency transactions are irreversible by nature. We are not
+      able to reverse or recall a crypto payment once sent to the wallet
+      address we provide. Please double-check the wallet address,
+      network, and amount carefully before sending payment.
+    </p>
+
+    <h5 class="mt-4">6. How to Request a Refund</h5>
+    <p class="text-muted-soft mb-0">
+      To request a refund under the circumstances above, contact us via
+      our <a href="{% url 'pages:contact' %}">Contact Us</a> page with
+      your account username, the transaction date, and a description of
+      the issue. We aim to respond to all refund inquiries within a
+      reasonable timeframe.
+    </p>
+  </div>
+</div>
+{% endblock %}

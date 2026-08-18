@@ -1,0 +1,39 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Credits{% endblock %}
+{% block page_title %}Credits{% endblock %}
+{% block page_subtitle %}You currently have {{ user.credits }} credits.{% endblock %}
+{% block content %}
+
+{% if user.credits <= 0 %}
+<div class="alert mb-4" style="background: rgba(226,86,77,0.12); border: 1px solid rgba(226,86,77,0.3); color: #f3a29c;">
+  <i class="bi bi-exclamation-triangle me-1"></i>
+  You're out of credits — going live and switching your look are locked until you top up.
+</div>
+{% endif %}
+
+<div class="row g-4">
+  {% for plan in plans %}
+  <div class="col-md-6 col-lg-4">
+    <div class="glass-card pricing-card h-100">
+      <h6 class="text-muted-soft text-uppercase mb-2" style="font-size:.78rem;">{{ plan.name }}</h6>
+      <div class="price-amount mb-1">{{ plan.credits }}<span class="fs-6 text-muted-soft"> credits</span></div>
+      <div class="text-muted-soft small mb-2">${{ plan.price }}{% if plan.minutes_label %} · {{ plan.minutes_label }}{% endif %}</div>
+      {% if plan.description %}<p class="text-muted-soft small mb-3">{{ plan.description|linebreaksbr }}</p>{% endif %}
+      <a href="{% url 'payments:gate' %}" class="btn btn-outline-glass w-100">Buy This Plan</a>
+    </div>
+  </div>
+  {% empty %}
+  <div class="col-12 text-center text-muted-soft py-4">No plans are available right now.</div>
+  {% endfor %}
+</div>
+
+<div class="glass-card p-4 mt-4">
+  <h6 class="mb-2"><i class="bi bi-info-circle me-2"></i>How credits work</h6>
+  <p class="text-muted-soft small mb-0">
+    Credits are consumed based on your selected stream quality (Low, Medium,
+    High, Ultra) for every minute you're live. Buying a plan submits a
+    payment for admin review — once approved, credits are added to your
+    account.
+  </p>
+</div>
+{% endblock %}

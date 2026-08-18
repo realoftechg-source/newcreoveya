@@ -1,0 +1,30 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}AI Jobs{% endblock %}
+{% block page_title %}AI Jobs{% endblock %}
+{% block page_subtitle %}History of your AI stream processing jobs.{% endblock %}
+{% block content %}
+<div class="glass-card p-4">
+  <div class="table-responsive">
+    <table class="table table-glass mb-0">
+      <thead>
+        <tr><th>Title</th><th>Status</th><th>AI Character</th><th>Background</th><th>Quality</th><th>Credits Used</th><th>Created</th></tr>
+      </thead>
+      <tbody>
+        {% for job in jobs %}
+        <tr>
+          <td>{{ job.title }}</td>
+          <td><span class="badge-status badge-{{ job.status }}">{{ job.get_status_display }}</span></td>
+          <td>{{ job.ai_character }}</td>
+          <td>{{ job.background }}</td>
+          <td>{{ job.get_quality_display }}</td>
+          <td>{{ job.credits_used }}</td>
+          <td>{{ job.created_at|date:"M d, Y H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" class="text-center text-muted-soft py-4">No AI jobs yet. Start a stream to see it here.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

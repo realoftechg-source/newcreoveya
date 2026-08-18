@@ -1,0 +1,134 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Welcome back, {{ user.display_name|default:user.username }}{% endblock %}
+{% block page_subtitle %}Here's what's happening with your streams today.{% endblock %}
+{% block content %}
+
+<div class="row g-3 mb-4">
+  <div class="col-sm-6 col-lg-3">
+    <div class="glass-card stat-card">
+      <div class="stat-icon mb-3"><i class="bi bi-coin text-white"></i></div>
+      <div class="stat-value">{{ user.credits }}</div>
+      <div class="stat-label">Available Credits</div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-3">
+    <div class="glass-card stat-card">
+      <div class="stat-icon mb-3"><i class="bi bi-award text-white"></i></div>
+      <div class="stat-value">{{ user.get_subscription_plan_display }}</div>
+      <div class="stat-label">Current Plan</div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-3">
+    <div class="glass-card stat-card">
+      <div class="stat-icon mb-3"><i class="bi bi-shield-check text-white"></i></div>
+      <div class="stat-value"><span class="badge-status badge-{{ user.account_status }}">{{ user.get_account_status_display }}</span></div>
+      <div class="stat-label">Account Status</div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-3">
+    <div class="glass-card stat-card">
+      <div class="stat-icon mb-3"><i class="bi bi-broadcast text-white"></i></div>
+      <div class="stat-value">{{ today_streams }}</div>
+      <div class="stat-label">Today's Streams</div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-3">
+    <div class="glass-card stat-card">
+      <div class="stat-icon mb-3"><i class="bi bi-calendar3 text-white"></i></div>
+      <div class="stat-value">{{ month_streams }}</div>
+      <div class="stat-label">Monthly Streams</div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-3">
+    <div class="glass-card stat-card">
+      <div class="stat-icon mb-3"><i class="bi bi-cpu text-white"></i></div>
+      <div class="stat-value" style="font-size:1.3rem;">{{ api_status }}</div>
+      <div class="stat-label">AI Engine</div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-3">
+    <div class="glass-card stat-card">
+      <div class="stat-icon mb-3"><i class="bi bi-lightning-charge text-white"></i></div>
+      <div class="stat-value">{{ total_credits_used }}</div>
+      <div class="stat-label">Current Usage</div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-3">
+    <div class="glass-card stat-card">
+      <div class="stat-icon mb-3"><i class="bi bi-camera-video text-white"></i></div>
+      <div class="stat-value" style="font-size:1.3rem;">{% if active_stream %}Connected{% else %}Idle{% endif %}</div>
+      <div class="stat-label">Current Camera</div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-3">
+    <div class="glass-card stat-card">
+      <div class="stat-icon mb-3"><i class="bi bi-hdd-network text-white"></i></div>
+      <div class="stat-value">{{ bandwidth_used_gb }} GB</div>
+      <div class="stat-label">Bandwidth Used</div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-3">
+    <div class="glass-card stat-card">
+      <div class="stat-icon mb-3"><i class="bi bi-hdd-fill text-white"></i></div>
+      <div class="stat-value">{{ storage_used_gb }} GB</div>
+      <div class="stat-label">Storage Used</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="glass-card p-4 h-100">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">Recent Streams</h5>
+        <a href="{% url 'dashboard:ai_jobs' %}" class="small">View all <i class="bi bi-arrow-right"></i></a>
+      </div>
+      {% if recent_streams %}
+      <div class="table-responsive">
+        <table class="table table-glass mb-0">
+          <thead><tr><th>Title</th><th>Status</th><th>Quality</th><th>Created</th></tr></thead>
+          <tbody>
+            {% for stream in recent_streams %}
+            <tr>
+              <td>{{ stream.title }}</td>
+              <td><span class="badge-status badge-{{ stream.status }}">{{ stream.get_status_display }}</span></td>
+              <td>{{ stream.get_quality_display }}</td>
+              <td>{{ stream.created_at|timesince }} ago</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="text-center py-5 text-muted-soft">
+        <i class="bi bi-camera-reels fs-1 d-block mb-2"></i>
+        No streams yet. <a href="{% url 'studio:home' %}">Start your first stream</a>.
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="glass-card p-4 h-100">
+      <h5 class="mb-3">Quick Actions</h5>
+      <div class="d-grid gap-2">
+        <a href="{% url 'studio:home' %}" class="btn btn-gradient text-start"><i class="bi bi-broadcast me-2"></i>Start AI Stream</a>
+        <a href="{% url 'payments:credits' %}" class="btn btn-outline-glass text-start"><i class="bi bi-coin me-2"></i>Buy Credits</a>
+        <a href="{% url 'analytics:home' %}" class="btn btn-outline-glass text-start"><i class="bi bi-bar-chart-line me-2"></i>View Analytics</a>
+        <a href="{% url 'dashboard:settings' %}" class="btn btn-outline-glass text-start"><i class="bi bi-gear me-2"></i>Account Settings</a>
+      </div>
+    </div>
+
+    <div class="glass-card p-4 h-100 mt-4">
+      <h5 class="mb-2"><i class="bi bi-people-fill me-2"></i>Refer & Earn</h5>
+      <p class="text-muted-soft small mb-2">Share your link — earn credits when someone you refer makes their first payment.</p>
+      <div class="copy-url-box mb-2">
+        <input type="text" id="referralLinkInput" readonly value="{{ request.scheme }}://{{ request.get_host }}{% url 'accounts:register' %}?ref={{ user.referral_code }}">
+        <button class="btn btn-sm btn-outline-glass" onclick="const i=document.getElementById('referralLinkInput'); i.select(); navigator.clipboard.writeText(i.value); this.textContent='Copied!'; setTimeout(()=>this.textContent='Copy',1500);">Copy</button>
+      </div>
+      <p class="text-muted-soft small mb-0">{{ user.referrals.count }} referral{{ user.referrals.count|pluralize }} so far</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

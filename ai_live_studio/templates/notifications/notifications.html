@@ -1,0 +1,49 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Notifications{% endblock %}
+{% block page_title %}Notifications{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-end mb-3">
+  <form method="post" action="{% url 'notifications:mark_all_read' %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-outline-glass btn-sm"><i class="bi bi-check2-all me-1"></i>Mark all read</button>
+  </form>
+</div>
+
+<div class="glass-card p-2">
+  {% for n in notifications %}
+  <div class="d-flex justify-content-between align-items-start p-3 {% if not forloop.last %}border-bottom{% endif %}" style="border-color: var(--border-glass) !important;">
+    <div class="d-flex gap-3">
+      <div class="stat-icon" style="width:38px;height:38px;flex-shrink:0;">
+        <i class="bi
+          {% if n.notification_type == 'success' %}bi-check-circle
+          {% elif n.notification_type == 'warning' %}bi-exclamation-triangle
+          {% elif n.notification_type == 'error' %}bi-x-circle
+          {% else %}bi-info-circle{% endif %} text-white"></i>
+      </div>
+      <div>
+        <div class="fw-semibold {% if not n.is_read %}text-white{% else %}text-muted-soft{% endif %}">{{ n.title }}</div>
+        <div class="text-muted-soft small">{{ n.message }}</div>
+        <div class="text-muted-soft" style="font-size:.72rem;">{{ n.created_at|timesince }} ago</div>
+      </div>
+    </div>
+    <div class="d-flex gap-2">
+      {% if not n.is_read %}
+      <form method="post" action="{% url 'notifications:mark_read' n.pk %}">
+        {% csrf_token %}
+        <button class="btn btn-sm btn-outline-glass" title="Mark read"><i class="bi bi-check2"></i></button>
+      </form>
+      {% endif %}
+      <form method="post" action="{% url 'notifications:delete' n.pk %}">
+        {% csrf_token %}
+        <button class="btn btn-sm btn-danger-glass" title="Delete"><i class="bi bi-trash"></i></button>
+      </form>
+    </div>
+  </div>
+  {% empty %}
+  <div class="text-center py-5 text-muted-soft">
+    <i class="bi bi-bell-slash fs-1 d-block mb-2"></i>
+    You're all caught up.
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

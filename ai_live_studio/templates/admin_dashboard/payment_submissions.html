@@ -1,0 +1,59 @@
+{% extends 'admin_dashboard/base.html' %}
+{% block title %}Payment Approvals{% endblock %}
+{% block page_title %}Payment Approvals{% endblock %}
+{% block content %}
+
+<div class="d-flex gap-2 mb-3">
+  <a href="?status=pending" class="btn btn-sm {% if status_filter == 'pending' %}btn-gradient{% else %}btn-outline-glass{% endif %}">Pending</a>
+  <a href="?status=approved" class="btn btn-sm {% if status_filter == 'approved' %}btn-gradient{% else %}btn-outline-glass{% endif %}">Approved</a>
+  <a href="?status=rejected" class="btn btn-sm {% if status_filter == 'rejected' %}btn-gradient{% else %}btn-outline-glass{% endif %}">Rejected</a>
+  <a href="?status=all" class="btn btn-sm {% if status_filter == 'all' %}btn-gradient{% else %}btn-outline-glass{% endif %}">All</a>
+</div>
+
+<div class="row g-3">
+  {% for s in submissions %}
+  <div class="col-md-6 col-lg-4">
+    <div class="glass-card p-3">
+      <div class="d-flex justify-content-between mb-2">
+        <span class="badge-status {% if s.status == 'approved' %}badge-active{% elif s.status == 'rejected' %}badge-suspended{% else %}badge-pending{% endif %}">{{ s.get_status_display }}</span>
+        <span class="text-muted-soft small">{{ s.created_at|date:"M d, H:i" }}</span>
+      </div>
+      <div class="fw-semibold">{{ s.user.username }}</div>
+      <div class="text-muted-soft small">{{ s.user.email }}</div>
+      <div class="mt-2">{{ s.plan.name|default:"—" }} — ${{ s.amount }}</div>
+      <div class="text-muted-soft small">{{ s.method.get_method_type_display|default:"—" }}</div>
+
+      <a href="{% url 'payments:receipt_image' s.id %}" target="_blank" class="d-block mt-2">
+        <img src="{% url 'payments:receipt_image' s.id %}" class="img-fluid rounded" style="max-height:160px; object-fit:cover; width:100%;">
+      </a>
+
+      {% if s.status == 'pending' %}
+      <div class="d-flex gap-2 mt-3">
+        <form method="post" action="{% url 'admin_dashboard:approve_payment' s.id %}" class="flex-fill">
+          {% csrf_token %}<button class="btn btn-sm btn-gradient w-100">Approve</button>
+        </form>
+        <form method="post" action="{% url 'admin_dashboard:reject_payment' s.id %}" class="flex-fill" onsubmit="return confirmReject(this);">
+          {% csrf_token %}
+          <input type="hidden" name="note" class="reject-note">
+          <button class="btn btn-sm btn-danger-glass w-100">Reject</button>
+        </form>
+      </div>
+      {% elif s.admin_note %}
+      <p class="text-muted-soft small mt-2 mb-0"><em>{{ s.admin_note }}</em></p>
+      {% endif %}
+    </div>
+  </div>
+  {% empty %}<div class="col-12 text-center text-muted-soft py-4">Nothing here.</div>{% endfor %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  function confirmReject(form) {
+    const note = prompt('Optional reason for rejection:');
+    if (note === null) return false;
+    form.querySelector('.reject-note').value = note;
+    return true;
+  }
+</script>
+{% endblock %}

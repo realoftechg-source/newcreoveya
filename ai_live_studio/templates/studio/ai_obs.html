@@ -1,0 +1,111 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}AI &amp; OBS{% endblock %}
+{% block page_title %}AI &amp; OBS{% endblock %}
+{% block page_subtitle %}Feed your AI output into OBS, then use OBS's Virtual Camera anywhere — Zoom, WhatsApp, TikTok, Discord.{% endblock %}
+{% block content %}
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="glass-card p-4 mb-4">
+      <h6 class="mb-3">AI Settings</h6>
+      <div class="row g-3">
+        <div class="col-6">
+          <label>Resolution</label>
+          <select class="form-select" id="obsResolutionSelect">
+            {% for value, label in resolution_choices %}
+            <option value="{{ value }}" {% if value == stream.resolution %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-6">
+          <label>Frame Rate</label>
+          <select class="form-select" id="obsFpsSelect">
+            <option value="24">24 FPS</option>
+            <option value="30" selected>30 FPS</option>
+            <option value="60">60 FPS</option>
+          </select>
+        </div>
+      </div>
+      <p class="text-muted-soft small mt-3 mb-0">
+        Real-time AI streaming. Credits are only consumed while a stream is live.
+      </p>
+    </div>
+
+    <div class="glass-card p-4">
+      <h6 class="mb-2">OBS Browser Source</h6>
+      <p class="text-muted-soft small mb-3">
+        Add this private URL as a Browser Source in OBS (1280x720). Your camera
+        preview appears here when you open this page; when you Start Streaming
+        in the AI Studio, this source switches to your AI program output automatically.
+      </p>
+
+      <div class="copy-url-box mb-3">
+        <input type="text" id="obsUrlInput" readonly value="{{ obs_url }}">
+        <button class="btn btn-sm btn-outline-glass" id="copyObsUrlBtn"><i class="bi bi-clipboard"></i> Copy</button>
+      </div>
+
+      <div class="d-flex gap-2 flex-wrap mb-3">
+        <a href="{{ obs_url }}" target="_blank" class="btn btn-outline-glass btn-sm"><i class="bi bi-box-arrow-up-right me-1"></i>Open preview</a>
+        <form method="post" action="{% url 'studio:regenerate_obs_url' %}" onsubmit="return confirm('Regenerating invalidates your previous OBS URL — you\'ll need to update it in OBS. Continue?');">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-outline-glass btn-sm"><i class="bi bi-arrow-repeat me-1"></i>Regenerate URL</button>
+        </form>
+      </div>
+
+      <div class="alert small mb-0" style="background: rgba(217,154,61,0.12); border: 1px solid rgba(217,154,61,0.3); color: var(--accent-secondary-light);">
+        <i class="bi bi-shield-lock me-1"></i>
+        Keep this URL private — regenerating it invalidates the previous link.
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="glass-card p-4 mb-4">
+      <h6 class="mb-3">OBS setup steps</h6>
+      <ol class="text-muted-soft small ps-3 mb-0" style="line-height: 2;">
+        <li>Download and open <strong>OBS Studio</strong> (free, obsproject.com).</li>
+        <li>Under <strong>Sources</strong>, click <strong>+</strong> → <strong>Browser</strong>, and paste your Creoveya AI Live Studio URL above.</li>
+        <li>Set the Browser Source size to match your resolution (e.g. 1280x720).</li>
+        <li>Keep this dashboard's AI Studio tab open — your camera preview shows up in OBS right away.</li>
+        <li>Click <strong>Start Streaming</strong> in AI Studio — OBS switches to your AI output automatically.</li>
+        <li>In OBS, click <strong>Start Virtual Camera</strong>.</li>
+      </ol>
+    </div>
+
+    <div class="glass-card p-4">
+      <h6 class="mb-3"><i class="bi bi-camera-reels me-2"></i>Use it anywhere</h6>
+      <p class="text-muted-soft small mb-2">
+        Once OBS's <strong>Virtual Camera</strong> is running, select
+        "OBS Virtual Camera" as your webcam in any app:
+      </p>
+      <ul class="text-muted-soft small ps-3 mb-0" style="line-height: 1.9;">
+        <li>Zoom, Google Meet, Microsoft Teams</li>
+        <li>WhatsApp Desktop / Web video calls</li>
+        <li>Discord voice channel video</li>
+        <li>TikTok LIVE Studio, Twitch, YouTube Live</li>
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.getElementById('copyObsUrlBtn')?.addEventListener('click', () => {
+    const input = document.getElementById('obsUrlInput');
+    input.select();
+    navigator.clipboard.writeText(input.value).then(() => {
+      const btn = document.getElementById('copyObsUrlBtn');
+      btn.innerHTML = '<i class="bi bi-check2"></i> Copied';
+      setTimeout(() => { btn.innerHTML = '<i class="bi bi-clipboard"></i> Copy'; }, 1500);
+    });
+  });
+
+  document.getElementById('obsResolutionSelect')?.addEventListener('change', function () {
+    window.csrfFetch('/api/change-quality/', {
+      method: 'POST',
+      body: JSON.stringify({ resolution: this.value }),
+    });
+  });
+</script>
+{% endblock %}

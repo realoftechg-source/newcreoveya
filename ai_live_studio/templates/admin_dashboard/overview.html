@@ -1,0 +1,32 @@
+{% extends 'admin_dashboard/base.html' %}
+{% block title %}Overview{% endblock %}
+{% block page_title %}Overview{% endblock %}
+{% block content %}
+<div class="row g-3 mb-4">
+  <div class="col-sm-6 col-lg-3"><div class="glass-card stat-card"><div class="stat-value">{{ total_users }}</div><div class="stat-label">Total Users</div></div></div>
+  <div class="col-sm-6 col-lg-3"><div class="glass-card stat-card"><div class="stat-value">{{ active_users }}</div><div class="stat-label">Activated Users</div></div></div>
+  <div class="col-sm-6 col-lg-3"><div class="glass-card stat-card"><div class="stat-value">{{ pending_payments }}</div><div class="stat-label">Pending Payments</div></div></div>
+  <div class="col-sm-6 col-lg-3"><div class="glass-card stat-card"><div class="stat-value">{{ live_now }}</div><div class="stat-label">Live Right Now</div></div></div>
+</div>
+
+<div class="glass-card p-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h6 class="mb-0">Recent Payment Submissions</h6>
+    <a href="{% url 'admin_dashboard:payment_submissions' %}" class="small">Review all →</a>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-glass mb-0">
+      <thead><tr><th>User</th><th>Plan</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+      <tbody>
+        {% for s in recent_payments %}
+        <tr>
+          <td>{{ s.user.username }}</td><td>{{ s.plan.name|default:"—" }}</td><td>${{ s.amount }}</td>
+          <td><span class="badge-status {% if s.status == 'approved' %}badge-active{% elif s.status == 'rejected' %}badge-suspended{% else %}badge-pending{% endif %}">{{ s.get_status_display }}</span></td>
+          <td>{{ s.created_at|date:"M d, H:i" }}</td>
+        </tr>
+        {% empty %}<tr><td colspan="5" class="text-center text-muted-soft py-4">No payments yet.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

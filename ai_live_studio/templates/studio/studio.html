@@ -1,0 +1,196 @@
+{% extends 'base_dashboard.html' %}
+{% load static %}
+{% block title %}AI Studio{% endblock %}
+{% block page_title %}AI Studio{% endblock %}
+{% block page_subtitle %}Preview your camera, choose your look, then go live.{% endblock %}
+{% block content %}
+<div id="studioRoot"
+     data-stream-id="{{ stream.stream_id }}"
+     data-stream-status="{{ stream.status }}"
+     data-live-url="{{ request.scheme }}://{{ request.get_host }}{{ stream.live_url }}"
+     data-ai-engine-connected="{{ ai_engine_connected|yesno:'true,false' }}"
+     data-current-look-id="{{ stream.look_id|default:'' }}">
+
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="camera-preview-wrap" id="cameraWrap">
+      <div class="camera-overlay-top">
+        <span class="badge-status badge-{{ stream.status }}" id="statusBadge">{{ stream.get_status_display|upper }}</span>
+        <div class="d-flex gap-2 align-items-center">
+          <span class="badge bg-dark bg-opacity-75" id="aiStatusBadge"></span>
+          <span class="badge bg-dark bg-opacity-75" id="audienceCounter"><i class="bi bi-eye-fill me-1"></i>{{ stream.audience_count }}</span>
+          <span class="badge bg-dark bg-opacity-75 duration-timer" id="durationTimer">00:00:00</span>
+        </div>
+      </div>
+
+      <video id="cameraPreview" autoplay muted playsinline></video>
+      <div class="camera-placeholder" id="cameraPlaceholder">
+        <i class="bi bi-camera-video-off" style="font-size: 3rem;"></i>
+        <span>Camera preview is off</span>
+        <button class="btn btn-outline-glass btn-sm" id="previewBtn"><i class="bi bi-play-fill me-1"></i>Preview Camera</button>
+      </div>
+
+      <div class="camera-overlay-bottom">
+        <button class="icon-btn" id="muteBtn" title="Mute"><i class="bi bi-mic-fill"></i></button>
+        <button class="icon-btn" id="mirrorBtn" title="Mirror"><i class="bi bi-symmetry-vertical"></i></button>
+        <button class="icon-btn" id="switchCameraBtn" title="Switch camera"><i class="bi bi-arrow-repeat"></i></button>
+      </div>
+    </div>
+
+    <!-- Choose your look -->
+    <div class="mt-3">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <label class="mb-0 d-block">Choose your look</label>
+        <button class="btn btn-outline-glass btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#uploadLookForm">
+          <i class="bi bi-plus-lg me-1"></i>Add Look
+        </button>
+      </div>
+
+      <div class="d-flex gap-2 flex-wrap mb-2">
+        <div class="look-card text-center {% if not stream.look %}active{% endif %}" data-look-id="" role="button">
+          <div class="avatar-circle mx-auto mb-1" style="width:56px;height:56px;">
+            <i class="bi bi-camera-fill"></i>
+          </div>
+          <div class="small">My Camera</div>
+        </div>
+
+        {% for look in looks %}
+        <div class="look-card text-center {% if stream.look_id == look.id %}active{% endif %}" data-look-id="{{ look.id }}" role="button">
+          <img src="{% url 'studio:look_image' look.id %}" class="rounded-circle mx-auto mb-1" style="width:56px;height:56px;object-fit:cover;display:block;" alt="{{ look.name }}">
+          <div class="small text-truncate" style="max-width:70px;">{{ look.name }}</div>
+          <form method="post" action="{% url 'studio:delete_look' look.id %}" class="mt-1" onsubmit="return confirm('Delete this look?');">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm p-0 text-danger" style="font-size:.7rem; background:none; border:none;" title="Delete">
+              <i class="bi bi-trash"></i>
+            </button>
+          </form>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="collapse" id="uploadLookForm">
+        <div class="glass-card p-3">
+          <form method="post" action="{% url 'studio:upload_look' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row g-2 align-items-end">
+              <div class="col-md-5">
+                {{ upload_form.name }}
+              </div>
+              <div class="col-md-5">
+                {{ upload_form.image }}
+              </div>
+              <div class="col-md-2">
+                <button type="submit" class="btn btn-gradient w-100">Upload</button>
+              </div>
+            </div>
+            <p class="text-muted-soft small mt-2 mb-0">
+              Use a clear, front-facing photo — JPEG, PNG, or WEBP, under 8MB.
+              This photo is private to your account.
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex gap-2 mt-3 flex-wrap">
+      <button class="btn btn-gradient flex-grow-1" id="startBtn" {% if stream.status == 'live' %}disabled{% endif %}>
+        <i class="bi bi-broadcast me-2"></i>Go Live
+      </button>
+      <button class="btn btn-danger-glass" id="stopBtn" {% if stream.status != 'live' %}disabled{% endif %}><i class="bi bi-stop-circle me-2"></i>Stop Stream</button>
+      <button class="btn btn-outline-glass" id="shareBtn"><i class="bi bi-share me-2"></i>Share Stream</button>
+    </div>
+
+    <div class="glass-card p-4 mt-3" id="shareBox" style="{% if stream.status != 'live' %}display:none;{% endif %}">
+      <label>Live URL — anyone with this link can watch, no account needed</label>
+      <div class="copy-url-box">
+        <input type="text" id="liveUrlInput" readonly value="">
+        <button class="btn btn-sm btn-outline-glass" id="copyUrlBtn"><i class="bi bi-clipboard"></i> Copy</button>
+      </div>
+    </div>
+
+    <div class="glass-card p-3 mt-3">
+      <h6 class="mb-2"><i class="bi bi-chat-dots-fill me-1"></i>Live Chat</h6>
+      <div id="chatMessages" style="height:200px; overflow-y:auto; border:1px solid var(--border-glass); border-radius:8px; padding:10px; background:var(--bg-card);"></div>
+      <div class="d-flex gap-2 mt-2">
+        <input type="text" id="chatInput" class="form-control form-control-sm" placeholder="Chat with your viewers..." maxlength="500">
+        <button id="chatSendBtn" class="btn btn-sm btn-gradient">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="glass-card studio-control-panel">
+      <h6 class="mb-3">Devices</h6>
+      <div class="mb-3">
+        <label>Camera</label>
+        <select class="form-select" id="cameraSelect"><option>Default Camera</option></select>
+      </div>
+      <div class="mb-3">
+        <label>Microphone</label>
+        <select class="form-select" id="micSelect"><option>Default Microphone</option></select>
+      </div>
+
+      <hr class="border-secondary">
+      <h6 class="mb-3">Stream Settings</h6>
+      <div class="mb-3">
+        <label>Quality</label>
+        <select class="form-select" id="qualitySelect">
+          {% for value, label in quality_choices %}
+          <option value="{{ value }}" {% if value == stream.quality %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="mb-3">
+        <label>Resolution</label>
+        <select class="form-select" id="resolutionSelect">
+          {% for value, label in resolution_choices %}
+          <option value="{{ value }}" {% if value == stream.resolution %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <hr class="border-secondary">
+      <div class="mb-3">
+        <label>Background</label>
+        <select class="form-select" id="backgroundSelect">
+          {% for b in backgrounds %}
+          <option value="{{ b.id }}" {% if b.id == stream.background %}selected{% endif %}>{{ b.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="alert alert-info small mt-3 mb-3" style="background: rgba(20,184,166,0.1); border: 1px solid rgba(20,184,166,0.25); color:var(--accent-light);">
+        <i class="bi bi-info-circle me-1"></i>
+        {% if ai_engine_connected %}
+        Decart is connected — select a look and go live to see it applied
+        in real time. Switching your look also works before you go live.
+        {% else %}
+        No AI API configured yet — viewers currently see your raw camera
+        passthrough. Set <code>DECART_API_KEY</code> in your environment
+        to activate real-time face swapping.
+        {% endif %}
+      </div>
+
+      <a href="{% url 'studio:ai_obs' %}" class="btn btn-outline-glass w-100">
+        <i class="bi bi-camera-reels me-2"></i>AI &amp; OBS Setup
+      </a>
+    </div>
+  </div>
+</div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/webrtc.js' %}"></script>
+<script src="{% static 'js/decart_realtime.js' %}"></script>
+<script src="{% static 'js/studio.js' %}"></script>
+<script src="{% static 'js/chat.js' %}"></script>
+<script>
+  window.LiveChat.start(
+    "{{ stream.stream_id }}",
+    document.getElementById('chatMessages'),
+    document.getElementById('chatInput'),
+    document.getElementById('chatSendBtn')
+  );
+</script>
+{% endblock %}

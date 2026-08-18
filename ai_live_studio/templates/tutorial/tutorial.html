@@ -1,0 +1,41 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Tutorial{% endblock %}
+{% block page_title %}Getting Started{% endblock %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="glass-card p-4 mb-4">
+      <h6 class="mb-2"><i class="bi bi-1-circle-fill me-2"></i>Preview your camera</h6>
+      <p class="text-muted-soft small mb-0">Open the AI Studio and click "Preview Camera" to grant browser permissions and confirm your video/audio devices.</p>
+    </div>
+    <div class="glass-card p-4 mb-4">
+      <h6 class="mb-2"><i class="bi bi-2-circle-fill me-2"></i>Choose your AI character &amp; background</h6>
+      <p class="text-muted-soft small mb-0">Pick an AI character and background from the dropdowns. You can switch these live once your own AI API is connected.</p>
+    </div>
+    <div class="glass-card p-4 mb-4">
+      <h6 class="mb-2"><i class="bi bi-3-circle-fill me-2"></i>Set your quality &amp; resolution</h6>
+      <p class="text-muted-soft small mb-0">Higher quality tiers consume more credits per minute. Adjust based on your plan.</p>
+    </div>
+    <div class="glass-card p-4 mb-4">
+      <h6 class="mb-2"><i class="bi bi-4-circle-fill me-2"></i>Go live</h6>
+      <p class="text-muted-soft small mb-0">Click "Start Stream" to begin. Share your Live URL with your audience, then "Stop Stream" when you're done.</p>
+    </div>
+    <div class="glass-card p-4">
+      <h6 class="mb-2"><i class="bi bi-5-circle-fill me-2"></i>AI processing, handled for you</h6>
+      <p class="text-muted-soft small mb-0">
+        You don't need to connect anything — AI character rendering and
+        background processing are built into the platform itself.
+      </p>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="glass-card p-4">
+      <h6 class="mb-3">Quick links</h6>
+      <div class="d-grid gap-2">
+        <a href="{% url 'studio:home' %}" class="btn btn-gradient text-start"><i class="bi bi-camera-video-fill me-2"></i>Go to AI Studio</a>
+        <a href="{% url 'dashboard:settings' %}" class="btn btn-outline-glass text-start"><i class="bi bi-gear-fill me-2"></i>Account Settings</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

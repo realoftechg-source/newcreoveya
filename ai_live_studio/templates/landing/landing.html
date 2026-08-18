@@ -1,0 +1,261 @@
+{% extends 'base_public.html' %}
+{% load static %}
+
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-glass fixed-top py-3">
+  <div class="container">
+    <a class="navbar-brand navbar-brand-gradient fs-4" href="{% url 'landing' %}">
+      <img src="/static/img/logo-mark.svg" alt="Creoveya" style="height:28px;width:28px;" class="me-1">Creoveya
+    </a>
+    <button class="navbar-toggler border-0 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <i class="bi bi-list fs-2 text-white"></i>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navMenu">
+      <ul class="navbar-nav align-items-lg-center gap-lg-4 mb-3 mb-lg-0">
+        <li class="nav-item"><a class="nav-link text-light" href="#features">Features</a></li>
+        <li class="nav-item"><a class="nav-link text-light" href="#pricing">Pricing</a></li>
+        <li class="nav-item"><a class="nav-link text-light" href="#faq">FAQ</a></li>
+        {% if user.is_authenticated %}
+        <li class="nav-item"><a class="btn btn-gradient" href="{% url 'dashboard:home' %}">Dashboard</a></li>
+        {% else %}
+        <li class="nav-item"><a class="nav-link text-light" href="{% url 'accounts:login' %}">Log in</a></li>
+        <li class="nav-item"><a class="btn btn-gradient" href="{% url 'accounts:register' %}">Get Started Free</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero-section text-center">
+  <div class="hero-glow"></div>
+  <div class="container position-relative">
+    <div class="hero-badge mb-4">
+      <i class="bi bi-stars text-warning"></i> Now supporting real-time AI avatars
+    </div>
+    <h1 class="hero-title fw-bold mb-4">
+      Livestream with an<br><span class="gradient-text">AI-powered identity</span>
+    </h1>
+    <p class="lead text-muted-soft mx-auto mb-5" style="max-width: 620px;">
+      Swap avatars, backgrounds, and voices in real time then broadcast
+      anywhere. Bring your own AI model or use ours. Built for creators,
+      teams, and platforms.
+    </p>
+    <div class="d-flex gap-3 justify-content-center flex-wrap">
+      <a href="{% url 'accounts:register' %}" class="btn btn-gradient btn-lg px-4">
+        Start Streaming Free <i class="bi bi-arrow-right ms-1"></i>
+      </a>
+      <a href="#features" class="btn btn-outline-glass btn-lg px-4">See Features</a>
+    </div>
+
+    <div class="glass-card mt-5 mx-auto p-2" style="max-width: 900px;">
+      <div class="ratio ratio-16x9 rounded-4 overflow-hidden position-relative" style="background: linear-gradient(135deg, #12211f, #0a0f0f);">
+        <video
+          autoplay muted loop playsinline
+          poster="https://images.pexels.com/videos/3910618/music-studio-podcast-studio-study-room-3910618.jpeg?auto=compress&cs=tinysrgb&h=627&fit=crop&w=1200"
+          style="width:100%; height:100%; object-fit:cover; position:absolute; inset:0;">
+          <source src="https://videos.pexels.com/video-files/3910618/3910618-hd_1920_1080_25fps.mp4" type="video/mp4">
+        </video>
+        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+             style="background: rgba(10,15,15,0.35); pointer-events: none;">
+          <i class="bi bi-play-circle text-white" style="font-size: 4rem; opacity:.85;"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD FOR WINDOWS -->
+<section class="py-5 container">
+  <div class="glass-card p-4 p-md-5 d-flex flex-column flex-md-row align-items-center justify-content-between gap-4">
+    <div class="d-flex align-items-center gap-3">
+      <div class="stat-icon" style="width:56px;height:56px;flex-shrink:0;">
+        <i class="bi bi-laptop text-white fs-4"></i>
+      </div>
+      <div>
+        <h5 class="mb-1">Get the Creoveya desktop app</h5>
+        <p class="text-muted-soft small mb-0">Stream straight from your desktop — no browser tab required. Free download for Windows.</p>
+      </div>
+    </div>
+    <a href="{{ windows_app_download_url }}" class="btn btn-gradient px-4 py-2 flex-shrink-0">
+      <i class="bi bi-download me-2"></i>Download for Windows
+    </a>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" class="py-5 py-lg-6 container">
+  <div class="text-center mb-5">
+    <h2 class="section-title">Everything you need to go live</h2>
+    <p class="section-subtitle">A complete toolkit for AI-enhanced streaming, from camera preview to analytics.</p>
+  </div>
+  <div class="row g-4">
+    {% for f in "123456"|make_list %}{% endfor %}
+    <div class="col-md-6 col-lg-4">
+      <div class="glass-card p-4 h-100">
+        <div class="stat-icon mb-3"><i class="bi bi-camera-video text-white"></i></div>
+        <h5>Live Camera Studio</h5>
+        <p class="text-muted-soft mb-0">Full camera and mic controls, mirror mode, and a real-time preview before you ever go live.</p>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+      <div class="glass-card p-4 h-100">
+        <div class="stat-icon mb-3"><i class="bi bi-person-bounding-box text-white"></i></div>
+        <h5>AI Character Switching</h5>
+        <p class="text-muted-soft mb-0">Swap between AI-rendered avatars and virtual backgrounds mid-stream, no restart required.</p>
+      </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-4">
+      <div class="glass-card p-4 h-100">
+        <div class="stat-icon mb-3"><i class="bi bi-bar-chart-line text-white"></i></div>
+        <h5>Real-Time Analytics</h5>
+        <p class="text-muted-soft mb-0">Track streams, watch time, and credit usage with clean, exportable charts.</p>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+      <div class="glass-card p-4 h-100">
+        <div class="stat-icon mb-3"><i class="bi bi-coin text-white"></i></div>
+        <h5>Simple Credit System</h5>
+        <p class="text-muted-soft mb-0">Transparent, prepaid credits with full purchase and usage history.</p>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+      <div class="glass-card p-4 h-100">
+        <div class="stat-icon mb-3"><i class="bi bi-shield-lock text-white"></i></div>
+        <h5>Secure by Default</h5>
+        <p class="text-muted-soft mb-0">Hashed passwords, CSRF protection, and secure sessions out of the box.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" class="py-5 py-lg-6 container">
+  <div class="text-center mb-5">
+    <h2 class="section-title">Simple, transparent pricing</h2>
+    <p class="section-subtitle">Real-time AI streaming, priced simply.</p>
+  </div>
+  <div class="row g-4 justify-content-center">
+    {% for plan in plans %}
+    <div class="col-md-6 col-lg-4">
+      <div class="glass-card pricing-card h-100">
+        <h5 class="text-muted-soft text-uppercase mb-2" style="font-size:.8rem; letter-spacing:.06em;">{{ plan.name }}</h5>
+        <div class="price-amount mb-1">${{ plan.price }}</div>
+        <div class="text-muted-soft small mb-4">{{ plan.credits }} credits{% if plan.minutes_label %} · {{ plan.minutes_label }}{% endif %}</div>
+        {% if plan.description %}
+        <p class="text-muted-soft small mb-4">{{ plan.description|linebreaksbr }}</p>
+        {% endif %}
+        <a href="{% url 'accounts:register' %}" class="btn btn-outline-glass w-100">Choose {{ plan.name }}</a>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center text-muted-soft">Pricing plans coming soon.</div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="py-5 py-lg-6 container">
+  <div class="text-center mb-5">
+    <h2 class="section-title">Loved by creators</h2>
+  </div>
+  <div class="row g-4">
+    {% for t in testimonials %}
+    <div class="col-md-4">
+      <div class="glass-card testimonial-card h-100">
+        <p class="text-muted-soft">"{{ t.quote }}"</p>
+        <div class="d-flex align-items-center gap-3 mt-3">
+          <div class="avatar-circle">{{ t.name|first }}</div>
+          <div>
+            <div class="fw-semibold">{{ t.name }}</div>
+            <div class="text-muted-soft small">{{ t.role }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="py-5 py-lg-6 container" style="max-width: 800px;">
+  <div class="text-center mb-5">
+    <h2 class="section-title">Frequently asked questions</h2>
+  </div>
+  <div class="accordion accordion-glass" id="faqAccordion">
+    {% for faq in faqs %}
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq{{ forloop.counter }}">
+          {{ faq.q }}
+        </button>
+      </h2>
+      <div id="faq{{ forloop.counter }}" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+        <div class="accordion-body">{{ faq.a }}</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="py-5 py-lg-6 container text-center">
+  <div class="glass-card p-5" style="background: var(--accent-gradient); border:none;">
+    <h2 class="fw-bold mb-3 text-white">Ready to go live?</h2>
+    <p class="text-white-50 mb-4">Create your free account and launch your first AI stream in minutes.</p>
+    <a href="{% url 'accounts:register' %}" class="btn btn-light btn-lg px-4 fw-semibold">Get Started Free</a>
+  </div>
+</section>
+
+<footer class="footer-glass">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="navbar-brand-gradient fs-4 fw-bold mb-2"><img src="/static/img/logo-mark.svg" alt="Creoveya" style="height:24px;width:24px;" class="me-1">Creoveya</div>
+        <p class="small">AI-powered live streaming, built for creators and teams.</p>
+      </div>
+      <div class="col-md-2">
+        <h6 class="text-light mb-3">Product</h6>
+        <ul class="list-unstyled small d-flex flex-column gap-2">
+          <li><a href="#features">Features</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="col-md-2">
+        <h6 class="text-light mb-3">Account</h6>
+        <ul class="list-unstyled small d-flex flex-column gap-2">
+          <li><a href="{% url 'accounts:login' %}">Log in</a></li>
+          <li><a href="{% url 'accounts:register' %}">Sign up</a></li>
+        </ul>
+      </div>
+      <div class="col-md-2">
+        <h6 class="text-light mb-3">Legal</h6>
+        <ul class="list-unstyled small d-flex flex-column gap-2">
+          <li><a href="{% url 'pages:terms' %}">Terms & Conditions</a></li>
+          <li><a href="{% url 'pages:privacy' %}">Privacy Policy</a></li>
+          <li><a href="{% url 'pages:disclaimer' %}">Disclaimer</a></li>
+          <li><a href="{% url 'pages:refund_policy' %}">Refund Policy</a></li>
+          <li><a href="{% url 'pages:cookies' %}">Cookie Policy</a></li>
+        </ul>
+      </div>
+      <div class="col-md-2">
+        <h6 class="text-light mb-3">Contact</h6>
+        <ul class="list-unstyled small d-flex flex-column gap-2">
+          <li><a href="{% url 'pages:contact' %}">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+    <hr class="border-secondary mt-4 mb-3">
+    <div class="d-flex justify-content-between flex-wrap small">
+      <span>&copy; {% now "Y" %} Creoveya AI Live Studio. All rights reserved.</span>
+      
+    </div>
+  </div>
+</footer>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/activity_notifications.js' %}"></script>
+{% endblock %}

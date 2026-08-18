@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>OBS Source</title>
+  <style>
+    html, body {
+      margin: 0; padding: 0; width: 100%; height: 100%;
+      background: #000; overflow: hidden;
+    }
+    #obsVideo {
+      width: 100%; height: 100%; object-fit: cover; display: none;
+    }
+    #obsPlaceholder {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      color: #4b5563; font-family: -apple-system, sans-serif; font-size: 20px;
+      text-align: center; padding: 20px; box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+  {% if stream and stream.status == 'live' %}
+  <div id="watchRoot" data-stream-id="{{ stream.stream_id }}">
+    <video id="obsVideo" autoplay playsinline muted></video>
+    <div id="obsPlaceholder">Waiting for camera preview…</div>
+  </div>
+  <script src="/static/js/webrtc.js"></script>
+  <script>
+    (function () {
+      const root = document.getElementById('watchRoot');
+      const streamId = root.dataset.streamId;
+      const video = document.getElementById('obsVideo');
+      const placeholder = document.getElementById('obsPlaceholder');
+
+      window.WebRTCViewer.connect(streamId, video, {
+        onConnected: () => {
+          placeholder.style.display = 'none';
+          video.style.display = 'block';
+        },
+        onError: () => {
+          placeholder.textContent = 'Stream not live.';
+        },
+        onEnded: () => {
+          placeholder.style.display = 'flex';
+          video.style.display = 'none';
+          placeholder.textContent = 'Stream ended.';
+        },
+      });
+    })();
+  </script>
+  {% else %}
+  <div id="obsPlaceholder">
+    Keep the Creoveya AI Live Studio dashboard open and click "Start Stream" —
+    this source will switch to your AI output automatically.
+  </div>
+  {% endif %}
+</body>
+</html>

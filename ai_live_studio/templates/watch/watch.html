@@ -1,0 +1,103 @@
+{% extends 'base_public.html' %}
+{% load static %}
+{% block title %}{% if stream %}{{ stream.title }} — Live{% else %}Stream Not Found{% endif %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<nav class="navbar navbar-glass py-3">
+  <div class="container">
+    <a class="navbar-brand navbar-brand-gradient fs-4" href="{% url 'landing' %}">
+      <img src="/static/img/logo-mark.svg" alt="Creoveya" style="height:28px;width:28px;" class="me-1">Creoveya
+    </a>
+  </div>
+</nav>
+
+<div class="container py-5" style="max-width: 900px;">
+  {% if not stream %}
+  <div class="glass-card p-5 text-center">
+    <i class="bi bi-camera-video-off text-muted-soft" style="font-size: 3rem;"></i>
+    <h4 class="mt-3">Stream not found</h4>
+    <p class="text-muted-soft">This link doesn't point to a valid stream. Double check the URL you were given.</p>
+    <a href="{% url 'landing' %}" class="btn btn-outline-glass mt-2">Back to Home</a>
+  </div>
+
+  {% else %}
+  <div id="watchRoot" data-stream-id="{{ stream_id }}">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+      <div>
+        <h4 class="mb-1">{{ stream.title }}</h4>
+        <p class="text-muted-soft small mb-0">Streamed by {{ stream.user.display_name }}</p>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-dark bg-opacity-75"><i class="bi bi-eye-fill me-1"></i><span id="watchAudience">{{ stream.audience_count }}</span> watching</span>
+        <span id="watchStatusBadge" class="badge-status {% if stream.status == 'live' %}badge-live{% else %}badge-ended{% endif %}">
+          {% if stream.status == 'live' %}LIVE{% else %}ENDED{% endif %}
+        </span>
+      </div>
+    </div>
+
+    <div class="camera-preview-wrap">
+      {% if stream.status == 'live' %}
+      <video id="watchVideo" autoplay playsinline controls style="display:none;"></video>
+      <div id="watchConnecting" class="camera-placeholder">
+        <div class="spinner-border text-light" role="status" style="width:2.5rem;height:2.5rem;"></div>
+        <span>Connecting to the stream…</span>
+      </div>
+      <div id="watchEnded" class="camera-placeholder" style="display:none;">
+        <i class="bi bi-camera-video-off" style="font-size: 3rem;"></i>
+        <span>This stream has ended.</span>
+      </div>
+      {% else %}
+      <div class="camera-placeholder">
+        <i class="bi bi-camera-video-off" style="font-size: 3rem;"></i>
+        <span>{% if stream.status == 'idle' %}This stream hasn't started yet.{% else %}This stream has ended.{% endif %}</span>
+      </div>
+      {% endif %}
+    </div>
+
+    <p class="text-muted-soft small mt-3">
+      <i class="bi bi-info-circle me-1"></i>
+      This is a direct, browser-to-browser connection to the broadcaster —
+      keep this tab open while watching.
+    </p>
+
+    {% if stream.status == 'live' %}
+    <div class="glass-card p-3 mt-3">
+      <h6 class="mb-2"><i class="bi bi-chat-dots-fill me-1"></i>Live Chat</h6>
+      <div id="chatMessages" style="height:220px; overflow-y:auto; border:1px solid var(--border-glass); border-radius:8px; padding:10px; background:var(--bg-card);"></div>
+      <div class="d-flex gap-2 mt-2">
+        <input type="text" id="chatInput" class="form-control form-control-sm" placeholder="Say something..." maxlength="500">
+        <button id="chatSendBtn" class="btn btn-sm btn-gradient">Send</button>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% if stream and stream.status == 'live' %}
+<script src="{% static 'js/webrtc.js' %}"></script>
+<script src="{% static 'js/watch.js' %}"></script>
+<script src="{% static 'js/chat.js' %}"></script>
+<script>
+  (function () {
+    let guestName = null;
+    window.LiveChat.start(
+      "{{ stream_id }}",
+      document.getElementById('chatMessages'),
+      document.getElementById('chatInput'),
+      document.getElementById('chatSendBtn'),
+      {
+        getDisplayName: () => {
+          if (!guestName) {
+            guestName = prompt('Pick a display name for chat:', 'Guest') || 'Guest';
+          }
+          return guestName;
+        },
+      }
+    );
+  })();
+</script>
+{% endif %}
+{% endblock %}

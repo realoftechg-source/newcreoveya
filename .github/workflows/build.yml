@@ -1,0 +1,60 @@
+name: Build Windows App
+
+# Triggers whenever you push a version tag, e.g. v1.0, v1.1, v2.0
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Python dependencies
+        working-directory: desktop
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Build the app with PyInstaller
+        working-directory: desktop
+        run: >
+          pyinstaller --onedir --windowed
+          --name Creoveya
+          --icon assets/icon.ico
+          --add-data "assets;assets"
+          app.py
+
+      - name: Install Inno Setup
+        run: choco install innosetup -y
+
+      - name: Build the installer (adds Start Menu + Desktop shortcuts)
+        working-directory: desktop
+        run: '"C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss'
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CreoveyaSetup
+          path: desktop/Output/CreoveyaSetup.exe
+
+      - name: Publish as GitHub Release asset
+        uses: softprops/action-gh-release@v2
+        with:
+          files: desktop/Output/CreoveyaSetup.exe
+          name: Creoveya ${{ github.ref_name }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

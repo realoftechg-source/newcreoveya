@@ -1,0 +1,131 @@
+/* =========================================================
+   Creoveya Admin Dashboard — Light Banking Theme
+   Scoped to body.admin-theme so the public dark site is untouched.
+   ========================================================= */
+
+body.admin-theme {
+  --bg-primary: #f4f6f9;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f8fafc;
+  --border-glass: #e2e8f0;
+  --accent: #1e40af;
+  --accent-light: #3b82f6;
+  --accent-dark: #1e3a8a;
+  --accent-secondary: #0d9488;
+  --accent-secondary-light: #14b8a6;
+  --accent-gradient: linear-gradient(135deg, #1e40af 0%, #0d9488 100%);
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --success: #16a34a;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --info: #0284c7;
+
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+body.admin-theme .sidebar {
+  background: #ffffff;
+  border-right: 1px solid var(--border-glass);
+}
+
+body.admin-theme .sidebar-link {
+  color: var(--text-secondary);
+}
+body.admin-theme .sidebar-link:hover {
+  background: #f1f5f9;
+  color: var(--text-primary);
+}
+body.admin-theme .sidebar-link.active {
+  background: var(--accent-dark);
+  color: #ffffff;
+}
+
+body.admin-theme .glass-card {
+  background: #ffffff;
+  border: 1px solid var(--border-glass);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  backdrop-filter: none;
+}
+body.admin-theme .glass-card:hover {
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+body.admin-theme .stat-card .stat-value { color: var(--text-primary); }
+body.admin-theme .stat-card .stat-label { color: var(--text-secondary); }
+body.admin-theme .stat-icon { background: var(--accent-gradient); }
+
+body.admin-theme .btn-gradient {
+  background: var(--accent-gradient);
+  color: #fff;
+}
+body.admin-theme .btn-outline-glass {
+  background: #ffffff;
+  border: 1px solid var(--border-glass);
+  color: var(--text-primary);
+}
+body.admin-theme .btn-outline-glass:hover {
+  background: #f1f5f9;
+  border-color: var(--accent);
+}
+body.admin-theme .btn-danger-glass {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+}
+body.admin-theme .btn-danger-glass:hover { background: #fee2e2; }
+
+body.admin-theme .form-control,
+body.admin-theme .form-select {
+  background: #ffffff;
+  border: 1px solid var(--border-glass);
+  color: var(--text-primary);
+}
+body.admin-theme .form-control:focus,
+body.admin-theme .form-select:focus {
+  background: #ffffff;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.12);
+  color: var(--text-primary);
+}
+body.admin-theme label { color: var(--text-secondary); }
+
+body.admin-theme .table-glass { color: var(--text-primary); }
+body.admin-theme .table-glass thead th {
+  border-bottom: 1px solid var(--border-glass);
+  color: var(--text-muted);
+}
+body.admin-theme .table-glass td,
+body.admin-theme .table-glass th { border-color: var(--border-glass); }
+body.admin-theme .table-glass tbody tr:hover { background: #f8fafc; }
+
+body.admin-theme .badge-active { background: #dcfce7; color: #15803d; }
+body.admin-theme .badge-pending { background: #fef3c7; color: #b45309; }
+body.admin-theme .badge-suspended { background: #fee2e2; color: #b91c1c; }
+body.admin-theme .badge-idle { background: #f1f5f9; color: var(--text-secondary); }
+
+body.admin-theme .avatar-circle { background: var(--accent-gradient); color: #fff; }
+body.admin-theme .navbar-brand-gradient {
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+body.admin-theme .text-muted-soft { color: var(--text-secondary) !important; }
+body.admin-theme .topbar h4 { color: var(--text-primary); }
+
+body.admin-theme .toast { color: #1e293b; }
+
+body.admin-theme .pagination .page-link {
+  background: #ffffff; border: 1px solid var(--border-glass); color: var(--text-primary);
+}
+body.admin-theme .pagination .page-item.disabled .page-link { background: #f1f5f9; color: var(--text-muted); }
+
+body.admin-theme .accordion-glass .accordion-item,
+body.admin-theme .copy-url-box {
+  background: #ffffff; border: 1px solid var(--border-glass); color: var(--text-primary);
+}

@@ -1,0 +1,67 @@
+{% extends 'admin_dashboard/base.html' %}
+{% block title %}Payment Methods{% endblock %}
+{% block page_title %}Payment Methods{% endblock %}
+{% block content %}
+
+<div class="row g-2 mb-4">
+  <div class="col-md-6">
+    <button class="btn btn-gradient w-100" data-bs-toggle="collapse" data-bs-target="#newBankForm"><i class="bi bi-bank me-1"></i>Add Bank Account</button>
+  </div>
+  <div class="col-md-6">
+    <button class="btn btn-gradient w-100" data-bs-toggle="collapse" data-bs-target="#newCryptoForm"><i class="bi bi-currency-bitcoin me-1"></i>Add Crypto Wallet</button>
+  </div>
+</div>
+
+<div class="collapse mb-4" id="newBankForm">
+  <div class="glass-card p-3">
+    <form method="post" action="{% url 'admin_dashboard:save_payment_method' %}" class="row g-2">
+      {% csrf_token %}
+      <input type="hidden" name="method_type" value="bank">
+      <div class="col-md-3"><input name="bank_name" class="form-control" placeholder="Bank name" required></div>
+      <div class="col-md-3"><input name="account_name" class="form-control" placeholder="Account holder name" required></div>
+      <div class="col-md-3"><input name="account_number" class="form-control" placeholder="Account number" required></div>
+      <div class="col-md-3"><input name="routing_or_swift" class="form-control" placeholder="Routing / SWIFT"></div>
+      <div class="col-md-2 form-check mt-2"><input type="checkbox" name="is_active" class="form-check-input" checked><label class="form-check-label small">Active</label></div>
+      <div class="col-12"><button class="btn btn-gradient">Save Bank Account</button></div>
+    </form>
+  </div>
+</div>
+
+<div class="collapse mb-4" id="newCryptoForm">
+  <div class="glass-card p-3">
+    <form method="post" action="{% url 'admin_dashboard:save_payment_method' %}" class="row g-2">
+      {% csrf_token %}
+      <input type="hidden" name="method_type" value="crypto">
+      <div class="col-md-3"><input name="crypto_currency" class="form-control" placeholder="e.g. BTC, USDT, ETH, SOL" required></div>
+      <div class="col-md-5"><input name="wallet_address" class="form-control" placeholder="Wallet address" required></div>
+      <div class="col-md-4"><input name="network_note" class="form-control" placeholder="Network note, e.g. TRC20"></div>
+      <div class="col-md-2 form-check mt-2"><input type="checkbox" name="is_active" class="form-check-input" checked><label class="form-check-label small">Active</label></div>
+      <div class="col-12"><button class="btn btn-gradient">Save Crypto Wallet</button></div>
+    </form>
+  </div>
+</div>
+
+<div class="row g-3">
+  {% for m in methods %}
+  <div class="col-md-6 col-lg-4">
+    <div class="glass-card p-3">
+      <div class="d-flex justify-content-between mb-2">
+        <span class="badge-status badge-idle">{{ m.get_method_type_display }}</span>
+        <span class="badge-status {% if m.is_active %}badge-active{% else %}badge-suspended{% endif %}">{% if m.is_active %}Active{% else %}Hidden{% endif %}</span>
+      </div>
+      {% if m.method_type == 'bank' %}
+      <div class="fw-semibold">{{ m.bank_name }}</div>
+      <div class="text-muted-soft small">{{ m.account_name }}</div>
+      <div class="text-muted-soft small">{{ m.account_number }}</div>
+      {% else %}
+      <div class="fw-semibold">{{ m.crypto_currency }}</div>
+      <div class="text-muted-soft small text-break">{{ m.wallet_address }}</div>
+      {% endif %}
+      <form method="post" action="{% url 'admin_dashboard:delete_payment_method' m.id %}" class="mt-2" onsubmit="return confirm('Delete this payment method?');">
+        {% csrf_token %}<button class="btn btn-sm btn-danger-glass w-100">Delete</button>
+      </form>
+    </div>
+  </div>
+  {% empty %}<div class="col-12 text-center text-muted-soft py-4">No payment methods set up yet.</div>{% endfor %}
+</div>
+{% endblock %}

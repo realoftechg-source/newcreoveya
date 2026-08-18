@@ -1,0 +1,121 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Analytics{% endblock %}
+{% block page_title %}Analytics{% endblock %}
+{% block page_subtitle %}Your streaming performance over the last 14 days.{% endblock %}
+{% block content %}
+
+<div class="row g-3 mb-4">
+  <div class="col-sm-6 col-lg-3">
+    <div class="glass-card stat-card">
+      <div class="stat-icon mb-3"><i class="bi bi-clock-history text-white"></i></div>
+      <div class="stat-value">{{ watch_time_total }}s</div>
+      <div class="stat-label">Total Watch Time</div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-3">
+    <div class="glass-card stat-card">
+      <div class="stat-icon mb-3"><i class="bi bi-lightning-charge text-white"></i></div>
+      <div class="stat-value">{{ credit_usage_total }}</div>
+      <div class="stat-label">Credit Usage</div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-3">
+    <div class="glass-card stat-card">
+      <div class="stat-icon mb-3"><i class="bi bi-broadcast text-white"></i></div>
+      <div class="stat-value">{{ active_sessions }}</div>
+      <div class="stat-label">Active Sessions</div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-3">
+    <div class="glass-card stat-card">
+      <div class="stat-icon mb-3"><i class="bi bi-graph-up text-white"></i></div>
+      <div class="stat-value">{{ quality_breakdown|length }}</div>
+      <div class="stat-label">Quality Tiers Used</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 mb-4">
+  <div class="col-lg-8">
+    <div class="glass-card p-4">
+      <h6 class="mb-3">Daily Streams (last 14 days)</h6>
+      <canvas id="dailyStreamsChart" height="110"></canvas>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="glass-card p-4">
+      <h6 class="mb-3">Streams by Quality</h6>
+      <canvas id="qualityChart" height="220"></canvas>
+    </div>
+  </div>
+</div>
+
+<div class="glass-card p-4">
+  <h6 class="mb-3">Stream History</h6>
+  <div class="table-responsive">
+    <table class="table table-glass mb-0">
+      <thead><tr><th>Title</th><th>Status</th><th>Quality</th><th>Duration</th><th>Credits Used</th><th>Date</th></tr></thead>
+      <tbody>
+        {% for s in stream_history %}
+        <tr>
+          <td>{{ s.title }}</td>
+          <td><span class="badge-status badge-{{ s.status }}">{{ s.get_status_display }}</span></td>
+          <td>{{ s.get_quality_display }}</td>
+          <td>{{ s.duration_seconds }}s</td>
+          <td>{{ s.credits_used }}</td>
+          <td>{{ s.created_at|date:"M d, Y H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" class="text-center text-muted-soft py-4">No stream history yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+  const labels = {{ labels_json|safe }};
+  const dailyCounts = {{ daily_counts_json|safe }};
+  const qualityLabels = {{ quality_labels_json|safe }};
+  const qualityCounts = {{ quality_counts_json|safe }};
+
+  Chart.defaults.color = '#94a3b8';
+  Chart.defaults.borderColor = 'rgba(255,255,255,0.08)';
+
+  new Chart(document.getElementById('dailyStreamsChart'), {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Streams',
+        data: dailyCounts,
+        borderColor: '#14b8a6',
+        backgroundColor: 'rgba(20,184,166,0.15)',
+        tension: 0.35,
+        fill: true,
+        pointBackgroundColor: '#5eead4',
+      }],
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
+    },
+  });
+
+  new Chart(document.getElementById('qualityChart'), {
+    type: 'doughnut',
+    data: {
+      labels: qualityLabels.length ? qualityLabels : ['No data'],
+      datasets: [{
+        data: qualityCounts.length ? qualityCounts : [1],
+        backgroundColor: ['#14b8a6', '#c2793d', '#22c55e', '#d99a3d'],
+        borderWidth: 0,
+      }],
+    },
+    options: { plugins: { legend: { position: 'bottom' } } },
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends 'base_public.html' %}
+{% block title %}Privacy Policy — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<nav class="navbar navbar-glass py-3">
+  <div class="container"><a class="navbar-brand navbar-brand-gradient fs-4" href="{% url 'landing' %}"><img src="/static/img/logo-mark.svg" alt="Creoveya" style="height:28px;width:28px;" class="me-1">Creoveya</a></div>
+</nav>
+<div class="container py-5" style="max-width: 820px;">
+  <h2 class="mb-2">Privacy Policy</h2>
+  <p class="text-muted-soft small mb-4">Last updated: August 2026</p>
+  <div class="glass-card p-4 p-md-5">
+
+    <p class="text-muted-soft">
+      This Privacy Policy explains how {{ SITE_NAME }} ("we," "us," or
+      "our") collects, uses, stores, and protects your information when
+      you use our website, AI Studio, and live streaming services.
+    </p>
+
+    <h5 class="mt-4">1. Information We Collect</h5>
+    <p class="text-muted-soft"><strong>Account information:</strong> username, email address, full name, and country provided at registration.</p>
+    <p class="text-muted-soft"><strong>Payment submissions:</strong> the plan selected, payment method chosen, transaction amount, and any receipt/screenshot you upload for admin review. We do not process card numbers or bank credentials directly — payments are made via bank transfer or cryptocurrency, verified manually.</p>
+    <p class="text-muted-soft"><strong>Uploaded "Look" photos:</strong> reference face images you upload for AI transformation. These are stored privately and are never publicly accessible — only you and platform administrators can view them.</p>
+    <p class="text-muted-soft"><strong>Usage data:</strong> stream sessions, duration, quality settings, credit consumption, device/browser information, and IP address (used for account activity logs and security).</p>
+    <p class="text-muted-soft"><strong>Live video streams:</strong> your camera and microphone feed while broadcasting is transmitted in real time to viewers and, where AI transformation is active, to our AI processing provider. We do not permanently record or store your video streams unless explicitly stated otherwise.</p>
+
+    <h5 class="mt-4">2. How We Use Your Information</h5>
+    <ul class="text-muted-soft">
+      <li>To create and manage your account, and provide dashboard, streaming, and AI features;</li>
+      <li>To process and verify payments and allocate credits;</li>
+      <li>To send transactional emails (verification, password reset, credit/payment notifications) and, where you haven't opted out, occasional platform announcements;</li>
+      <li>To maintain security, detect fraud or abuse, and enforce our Terms & Conditions;</li>
+      <li>To improve the Platform's performance and reliability.</li>
+    </ul>
+
+    <h5 class="mt-4">3. How We Share Information</h5>
+    <p class="text-muted-soft">
+      We do not sell your personal information. We share data only with:
+    </p>
+    <ul class="text-muted-soft">
+      <li><strong>Service providers</strong> that operate the Platform on our behalf, including our hosting provider, our AI real-time video processing provider (which receives your live camera frames and uploaded Look image only while a stream with AI transformation is active), and our email delivery provider for transactional and broadcast emails;</li>
+      <li><strong>Other users/viewers</strong>, who can see your public stream, username, and display name while you are live — they never see your account email or uploaded Look photo directly;</li>
+      <li><strong>Legal authorities</strong>, where required by law or to protect the rights, safety, or property of {{ SITE_NAME }} or others.</li>
+    </ul>
+
+    <h5 class="mt-4">4. Data Retention</h5>
+    <p class="text-muted-soft">
+      We retain account and usage data for as long as your account is
+      active, and for a reasonable period afterward to comply with legal
+      obligations, resolve disputes, and enforce our agreements. You may
+      request deletion of your account and associated data by contacting
+      us, subject to legal retention requirements (e.g. financial
+      transaction records).
+    </p>
+
+    <h5 class="mt-4">5. Security</h5>
+    <p class="text-muted-soft">
+      We use industry-standard measures to protect your data, including
+      encrypted connections (HTTPS), hashed passwords, and access
+      controls restricting who can view sensitive content such as your
+      uploaded Look photos and payment receipts. No system is completely
+      secure, and we cannot guarantee absolute security of information
+      transmitted over the internet.
+    </p>
+
+    <h5 class="mt-4">6. Your Rights</h5>
+    <p class="text-muted-soft">
+      Depending on your location, you may have rights to access, correct,
+      or delete your personal data, or to object to certain processing.
+      You can update most account information directly from your
+      Profile page, or contact us to exercise these rights.
+    </p>
+
+    <h5 class="mt-4">7. Cookies</h5>
+    <p class="text-muted-soft mb-0">
+      We use essential cookies for authentication and security. See our
+      <a href="{% url 'pages:cookies' %}">Cookie Policy</a> for details.
+    </p>
+
+    <h5 class="mt-4">8. Changes to This Policy</h5>
+    <p class="text-muted-soft">
+      We may update this Privacy Policy periodically. Material changes
+      will be reflected by updating the "Last updated" date above.
+    </p>
+
+    <h5 class="mt-4">9. Contact</h5>
+    <p class="text-muted-soft mb-0">
+      Questions about this Privacy Policy can be sent through our
+      <a href="{% url 'pages:contact' %}">Contact Us</a> page.
+    </p>
+  </div>
+</div>
+{% endblock %}

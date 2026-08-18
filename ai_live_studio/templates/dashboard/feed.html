@@ -1,0 +1,31 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Feed{% endblock %}
+{% block page_title %}Live Feed{% endblock %}
+{% block page_subtitle %}Recent and active streams across the platform.{% endblock %}
+{% block content %}
+<div class="row g-4">
+  {% for stream in streams %}
+  <div class="col-md-6 col-lg-4">
+    <div class="glass-card p-3">
+      <div class="ratio ratio-16x9 rounded-3 mb-3 d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #12211f, #0a0f0f);">
+        <i class="bi bi-camera-video text-white-50" style="font-size: 2rem;"></i>
+      </div>
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <h6 class="mb-1">{{ stream.title }}</h6>
+          <p class="text-muted-soft small mb-0">@{{ stream.user.username }}</p>
+        </div>
+        <span class="badge-status badge-{{ stream.status }}">{{ stream.get_status_display }}</span>
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <div class="col-12">
+    <div class="glass-card p-5 text-center text-muted-soft">
+      <i class="bi bi-collection-play fs-1 d-block mb-2"></i>
+      No streams in the feed yet.
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

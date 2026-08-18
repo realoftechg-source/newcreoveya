@@ -1,0 +1,70 @@
+{% extends 'base_public.html' %}
+{% block title %}Disclaimer — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<nav class="navbar navbar-glass py-3">
+  <div class="container"><a class="navbar-brand navbar-brand-gradient fs-4" href="{% url 'landing' %}"><img src="/static/img/logo-mark.svg" alt="Creoveya" style="height:28px;width:28px;" class="me-1">Creoveya</a></div>
+</nav>
+<div class="container py-5" style="max-width: 820px;">
+  <h2 class="mb-2">Disclaimer</h2>
+  <p class="text-muted-soft small mb-4">Last updated: August 2026</p>
+  <div class="glass-card p-4 p-md-5">
+
+    <h5>1. AI-Generated Content</h5>
+    <p class="text-muted-soft">
+      {{ SITE_NAME }} provides real-time AI face-transformation tools that
+      allow users to alter their live video appearance using a reference
+      photo they upload. Video streamed through our AI Studio is
+      synthetically altered and does not represent the streamer's actual,
+      unmodified likeness. Viewers should be aware that any stream shown
+      with an AI "Look" applied has been digitally transformed.
+    </p>
+
+    <h5 class="mt-4">2. No Verification of Identity or Consent</h5>
+    <p class="text-muted-soft">
+      We do not independently verify the identity of individuals depicted
+      in uploaded reference photos, nor do we verify that a user has
+      obtained consent to use a given likeness. Responsibility for
+      ensuring lawful, consensual use of any uploaded image rests
+      entirely with the user who uploads it, as set out in our
+      <a href="{% url 'pages:terms' %}">Terms & Conditions</a>. If you
+      believe your likeness has been used on this Platform without your
+      consent, please contact us immediately via our
+      <a href="{% url 'pages:contact' %}">Contact Us</a> page.
+    </p>
+
+    <h5 class="mt-4">3. Third-Party AI Processing</h5>
+    <p class="text-muted-soft">
+      Real-time face transformation is performed by a third-party AI
+      infrastructure provider. While we select and configure this
+      provider in good faith, we do not control and cannot guarantee the
+      accuracy, availability, or output quality of their processing.
+      Service interruptions, processing delays, or unexpected output are
+      possible and outside our direct control.
+    </p>
+
+    <h5 class="mt-4">4. Not Professional Advice</h5>
+    <p class="text-muted-soft">
+      Content on this website, including any guides, tutorials, or
+      informational pages, is provided for general informational
+      purposes only and does not constitute legal, financial, or
+      professional advice. You should seek independent professional
+      advice before making decisions based on information found here.
+    </p>
+
+    <h5 class="mt-4">5. No Guarantee of Earnings or Outcomes</h5>
+    <p class="text-muted-soft">
+      Any references to streaming performance, audience growth, or
+      platform usage are illustrative only. We make no guarantees
+      regarding viewership, income, or any other outcome resulting from
+      use of the Platform.
+    </p>
+
+    <h5 class="mt-4">6. External Links</h5>
+    <p class="text-muted-soft mb-0">
+      Our website may contain links to third-party websites or services
+      not operated by us. We are not responsible for the content,
+      accuracy, or practices of any linked third-party site.
+    </p>
+  </div>
+</div>
+{% endblock %}
